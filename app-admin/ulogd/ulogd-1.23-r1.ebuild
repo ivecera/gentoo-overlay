@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/app-admin/ulogd/ulogd-1.23-r1.ebuild,v 1.6 2010/06/17 20:00:40 patrick Exp $
 
+EAPI="2"
+
 inherit eutils flag-o-matic
 
 DESCRIPTION="iptables daemon for ULOG target for userspace iptables filter logging"
@@ -18,17 +20,13 @@ DEPEND="net-firewall/iptables
 	mysql? ( virtual/mysql )
 	postgres? ( dev-db/postgresql-server )"
 
-src_unpack() {
-	unpack ${A}
-	cd "${S}"
-
+src_prepare() {
 	epatch "${FILESDIR}/${P}-gcc41.patch"
-	EPATCH_OPTS="-F3" \
-		epatch "${WORKDIR}/${PN}-glsa-200701.patch"
+	EPATCH_OPTS="-F3" epatch "${WORKDIR}/${PN}-glsa-200701.patch"
 	epatch "${FILESDIR}/${P}-kernel.patch"
 }
 
-src_compile() {
+src_configure() {
 	# enables logfiles over 2G (#74924)
 	append-lfs-flags
 
@@ -36,7 +34,9 @@ src_compile() {
 		`use_with mysql` \
 		`use_with postgres pgsql` \
 		|| die "configure failed"
+}
 
+src_compile() {
 	# not parallel make safe: bug #128976
 	emake -j1 || die "make failed"
 }
