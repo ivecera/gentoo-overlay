@@ -1,0 +1,8 @@
+# ChangeLog for www-apps/lxrng
+# Copyright 1999-2009 Gentoo Foundation; Distributed under the GPL v2
+# $Header:$
+
+*lxrng-9999 (19 Mar 2009)
+
+  19 Mar 2009; Zhao Yongming <ming_zym@yahoo.com.cn> +lxrng-9999.ebuild:
+  Init
