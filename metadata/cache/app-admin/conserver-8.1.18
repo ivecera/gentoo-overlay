@@ -1,0 +1,22 @@
+ssl? ( >=dev-libs/openssl-0.9.6g ) pam? ( virtual/pam ) tcpd? ( sys-apps/tcp-wrappers ) debug? ( dev-libs/dmalloc ) kerberos? ( virtual/krb5 ) ssl? ( dev-libs/openssl )
+ssl? ( >=dev-libs/openssl-0.9.6g ) pam? ( virtual/pam ) tcpd? ( sys-apps/tcp-wrappers ) debug? ( dev-libs/dmalloc ) kerberos? ( virtual/krb5 ) pam? ( >=sys-auth/pambase-20080219.1 )
+0
+http://www.conserver.com/conserver-8.1.18.tar.gz
+
+http://www.conserver.com/
+BSD
+Serial Console Manager
+~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86
+eutils multilib pam portability ssl-cert toolchain-funcs
+pam ssl tcpd debug kerberos ssl
+
+
+
+
+
+compile install postinst unpack
+
+
+
+
+

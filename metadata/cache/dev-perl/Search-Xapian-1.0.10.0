@@ -1,0 +1,22 @@
+dev-lang/perl virtual/perl-Module-Build dev-libs/xapian test? ( virtual/perl-Test-Simple dev-perl/Cgi-Simple dev-perl/Test-Pod )
+dev-lang/perl
+0
+mirror://cpan/authors/id/O/OL/OLLY/Search-Xapian-1.0.10.0.tar.gz
+
+http://search.cpan.org/dist/Search-Xapian/
+|| ( Artistic GPL-2 )
+a perl-specific system for writing Asynchronous web applications
+~amd64 ~x86
+base eutils multilib perl-module portability toolchain-funcs
+test
+
+
+
+
+
+compile install postinst postrm preinst prerm setup test unpack
+
+
+
+
+
