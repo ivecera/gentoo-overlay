@@ -13,14 +13,15 @@ SRC_URI="mirror://sourceforge/pdfedit/${PN}/${P}.tar.bz2"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE=""
+IUSE="+manual"
 
 RDEPEND="
 	media-libs/freetype:2
 	media-libs/t1lib
 	x11-libs/qt:3"
 DEPEND="${RDEPEND}
-	dev-libs/boost"
+	dev-libs/boost
+	manual? ( app-text/docbook-xml-dtd:4.2 dev-libs/libxslt )"
 
 src_prepare() {
 	# Prevent overwriting the users' C{,XX}FLAGS
@@ -33,7 +34,8 @@ src_prepare() {
 
 src_configure() {
 	append-flags "-fno-strict-aliasing"
-	econf
+	econf --docdir=/usr/share/doc/${PF} \
+		$(use_enable manual user-manual)
 }
 
 src_install () {
