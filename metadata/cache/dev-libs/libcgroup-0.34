@@ -7,7 +7,7 @@ http://libcg.sourceforge.net/
 LGPL-2.1
 Tools and libraries to control and monitor control groups
 amd64 x86
-autotools eutils libtool linux-info multilib pam portability toolchain-funcs versionator
+autotools eutils flag-o-matic libtool linux-info multilib pam portability toolchain-funcs versionator
 +daemon debug pam static-libs +tools
 
 
