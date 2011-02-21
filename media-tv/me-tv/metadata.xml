@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <herd>no-herd</herd>
+  <maintainer>
+    <email>lordvan@gentoo.org</email>
+    <name>Thomas Raschbacher</name>
+  </maintainer>
+  <longdescription>Me TV is a GTK desktop application for watching digital television services that use the DVB standard.
+
+Me TV works with DVB-T, DVB-S, DVB-C and ATSC devices that are supported by Linux kernel drivers.</longdescription>
+  <use />
+</pkgmetadata>
