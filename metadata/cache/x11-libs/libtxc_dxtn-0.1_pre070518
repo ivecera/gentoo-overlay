@@ -1,0 +1,22 @@
+
+
+0
+http://people.freedesktop.org/~cbrill/libtxc_dxtn/libtxc_dxtn070518.tar.gz
+bindist fetch
+http://people.freedesktop.org/~cbrill/libtxc_dxtn/
+MIT
+Helper library for S3TC texture (de)compression
+~amd64 ~x86
+base eutils multilib portability toolchain-funcs versionator
+
+
+
+
+3
+
+compile configure install nofetch postinst prepare unpack
+
+
+
+
+
