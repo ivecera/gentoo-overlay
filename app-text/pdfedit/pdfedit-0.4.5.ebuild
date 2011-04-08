@@ -18,7 +18,7 @@ IUSE="+manual"
 RDEPEND="
 	media-libs/freetype:2
 	media-libs/t1lib
-	x11-libs/qt:3"
+	|| ( x11-libs/qt-meta:3 x11-libs/qt:3 )"
 DEPEND="${RDEPEND}
 	dev-libs/boost
 	manual? ( app-text/docbook-xml-dtd:4.2 dev-libs/libxslt )"
