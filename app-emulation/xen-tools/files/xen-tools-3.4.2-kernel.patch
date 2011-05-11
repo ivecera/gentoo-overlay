@@ -1,0 +1,11 @@
+diff -Nru xen-3.4.2/tools/blktap/drivers/blk_linux.c xen-3.4.2-patched/tools/blktap/drivers/blk_linux.c
+--- xen-3.4.2/tools/blktap/drivers/blk_linux.c    2010-08-25 07:22:07.000000000 -0300
++++ xen-3.4.2-patched/tools/blktap/drivers/blk_linux.c    2010-12-16 17:42:14.694504013 -0200
+@@ -1,6 +1,6 @@
+ #include <inttypes.h>
+ #include <sys/ioctl.h>
+-#include <linux/fs.h>
++#include <sys/mount.h>
+ #include "tapdisk.h"
+ #include "blk.h"
+ 
