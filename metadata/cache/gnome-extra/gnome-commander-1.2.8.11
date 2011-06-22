@@ -1,0 +1,22 @@
+app-text/gnome-doc-utils dev-libs/glib:2 gnome-base/gnome-vfs gnome-base/libgnome gnome-base/libgnomeui x11-libs/gtk+:2 chm? ( dev-libs/chmlib ) exif? ( media-gfx/exiv2 ) gsf? ( gnome-extra/libgsf ) pdf? ( app-text/poppler ) python? ( =dev-lang/python-2* ) taglib? ( media-libs/taglib ) dev-util/intltool dev-util/pkgconfig >=sys-apps/sed-4
+app-text/gnome-doc-utils dev-libs/glib:2 gnome-base/gnome-vfs gnome-base/libgnome gnome-base/libgnomeui x11-libs/gtk+:2 chm? ( dev-libs/chmlib ) exif? ( media-gfx/exiv2 ) gsf? ( gnome-extra/libgsf ) pdf? ( app-text/poppler ) python? ( =dev-lang/python-2* ) taglib? ( media-libs/taglib )
+0
+mirror://gnome/sources/gnome-commander/1.2/gnome-commander-1.2.8.11.tar.bz2
+
+http://www.nongnu.org/gcmd/
+GPL-2
+A full featured, twin-panel file manager for Gnome2
+~amd64 ~x86
+eutils fdo-mime gnome.org gnome2 gnome2-utils libtool multilib portability toolchain-funcs versionator
+chm doc exif +gsf pdf python taglib debug
+
+
+
+2
+
+compile configure install postinst postrm preinst prepare setup unpack
+
+
+
+
+
