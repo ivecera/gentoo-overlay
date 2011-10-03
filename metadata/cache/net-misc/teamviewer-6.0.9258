@@ -1,0 +1,22 @@
+>=app-emulation/wine-1.2
+>=app-emulation/wine-1.2
+0
+http://www.teamviewer.com/download/teamviewer_linux.tar.gz -> teamviewer-6.0.9258.tar.gz
+mirror strip
+http://www.teamviewer.com
+TeamViewer
+The All-In-One Solution for Remote Access and Support over the Internet
+~amd64 ~x86
+eutils multilib portability toolchain-funcs
+
+
+
+
+3
+
+install setup
+
+
+
+
+
