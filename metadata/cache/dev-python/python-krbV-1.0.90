@@ -1,0 +1,22 @@
+>=app-crypt/mit-krb5-1.2.2 >=app-admin/eselect-python-20091230 || ( =dev-lang/python-2.7* =dev-lang/python-2.6* )
+>=app-crypt/mit-krb5-1.2.2 >=app-admin/eselect-python-20091230 || ( =dev-lang/python-2.7* =dev-lang/python-2.6* )
+0
+https://fedorahosted.org/python-krbV/attachment/wiki/Releases/python-krbV-1.0.90.tar.bz2?format=raw -> python-krbV-1.0.90.tar.bz2
+mirror
+http://people.redhat.com/mikeb/python-krbV
+LGPL-2
+python-krbV allows python programs to use Kerberos 5 authentication/security
+amd64 x86
+distutils multilib python toolchain-funcs
+
+
+
+
+3
+
+compile install postinst postrm prepare setup
+
+
+
+
+
