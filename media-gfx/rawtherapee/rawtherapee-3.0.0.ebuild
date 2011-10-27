@@ -33,6 +33,10 @@ RDEPEND=">=dev-cpp/gtkmm-2.12:2.4
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
 
+src_prepare() {
+	epatch "${FILESDIR}/libpng15.patch"
+}
+
 src_install() {
 	cmake-utils_src_install
 	rm -f "${ED}usr/bin/rtstart"

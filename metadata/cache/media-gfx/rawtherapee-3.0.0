@@ -7,7 +7,7 @@ http://www.rawtherapee.com/
 GPL-3
 THe Experimental RAw Photo Editor
 ~amd64 ~x86
-base cmake-utils eutils flag-o-matic mercurial multilib portability toolchain-funcs
+base cmake-utils eutils flag-o-matic mercurial multilib portability toolchain-funcs user
 
 
 
