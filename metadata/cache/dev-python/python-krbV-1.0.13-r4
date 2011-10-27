@@ -7,7 +7,7 @@ http://people.redhat.com/mikeb/python-krbV
 LGPL
 Python extension module for Kerberos 5
 amd64
-eutils multilib portability python toolchain-funcs
+eutils multilib portability python toolchain-funcs user
 
 
 

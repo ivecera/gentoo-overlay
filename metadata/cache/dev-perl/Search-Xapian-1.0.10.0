@@ -7,7 +7,7 @@ http://search.cpan.org/dist/Search-Xapian/
 || ( Artistic GPL-2 )
 a perl-specific system for writing Asynchronous web applications
 ~amd64 ~x86
-base eutils multilib perl-module portability toolchain-funcs
+base eutils multilib perl-module portability toolchain-funcs user
 test
 
 
