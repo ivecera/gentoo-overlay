@@ -1,0 +1,22 @@
+>=app-admin/eselect-python-20091230
+app-arch/rpm[python] dev-python/pyopenssl >=dev-python/python-krbV-1.0.13 dev-python/urlgrabber >=app-admin/eselect-python-20091230
+0
+https://fedorahosted.org/releases/k/o/koji/koji-1.4.0.tar.bz2
+mirror
+http://fedorahosted.org/koji
+LGPL-2
+RPMs build system tools
+amd64 x86
+eutils multilib portability python toolchain-funcs user
+
+
+
+
+3
+
+compile install
+
+
+
+
+
