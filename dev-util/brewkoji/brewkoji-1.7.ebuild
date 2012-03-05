@@ -9,6 +9,7 @@ inherit python eutils
 DESCRIPTION="Brew compatibility interface for koji"
 SRC_URI="${P}.tar.bz2"
 
+HOMEPAGE="http://www.redhat.com/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="amd64"
