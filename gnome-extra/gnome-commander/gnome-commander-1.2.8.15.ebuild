@@ -14,14 +14,14 @@ LICENSE="GPL-2"
 
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-IUSE="chm doc exif +gsf id3 pdf python"
+IUSE="chm doc exif +gsf pdf python taglib"
 RESTRICT="mirror"
 
 USE_DESC="
 	   chm: add support for CHM
 	  exif: add support for Exif and IPTC
 	   gsf: add support for OLE, OLE2 and ODF
-	   id3: add support for ID3, Vorbis, FLAC and APE
+	taglib: add support for ID3, Vorbis, FLAC and APE
 	   pdf: add support for pdf
 	python: add support for python plugins"
 
@@ -35,7 +35,7 @@ RDEPEND="app-text/gnome-doc-utils
 		chm?	( dev-libs/chmlib )
         exif?   ( >=media-gfx/exiv2-0.14 )
         gsf?    ( >=gnome-extra/libgsf-1.12.0 )
-        id3?    ( >=media-libs/taglib-1.4 )
+        taglib? ( >=media-libs/taglib-1.4 )
 		pdf?	( app-text/poppler )
         python? ( >=dev-lang/python-2.4
                   >=dev-python/gnome-vfs-python-2.0.0 )"
@@ -53,7 +53,7 @@ pkg_setup() {
 		$(use_with chm libchm)
 		$(use_with exif libexiv2)
 		$(use_with gsf libgsf)
-		$(use_with id3 taglib)
+		$(use_with taglib taglib)
 		$(use_with pdf poppler)"
 	filter-ldflags -Wl,--as-needed
 }
