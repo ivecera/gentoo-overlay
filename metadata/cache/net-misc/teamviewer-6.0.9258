@@ -7,7 +7,7 @@ http://www.teamviewer.com
 TeamViewer
 The All-In-One Solution for Remote Access and Support over the Internet
 ~amd64 ~x86
-eutils multilib portability toolchain-funcs user
+eutils multilib toolchain-funcs user
 
 
 

@@ -7,7 +7,7 @@ https://launchpad.net/glmark2
 GPL-3
 Opengl test suite
 ~amd64 ~x86
-base eutils multilib portability toolchain-funcs user waf-utils
+base eutils multilib toolchain-funcs user waf-utils
 
 
 

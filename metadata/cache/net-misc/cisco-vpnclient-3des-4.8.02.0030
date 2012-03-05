@@ -1,5 +1,5 @@
-kernel_linux? ( sys-apps/module-init-tools ) sys-apps/sed kernel_linux? ( virtual/linux-sources )
-kernel_linux? ( sys-apps/module-init-tools )
+kernel_linux? ( virtual/modutils ) sys-apps/sed kernel_linux? ( virtual/linux-sources )
+kernel_linux? ( virtual/modutils )
 0
 http://projects.tuxx-home.at/ciscovpn/clients/linux/4.8.02/vpnclient-linux-x86_64-4.8.02.0030-k9.tar.gz
 mirror strip
@@ -7,7 +7,7 @@ http://cco.cisco.com/en/US/products/sw/secursw/ps2308/index.html
 cisco-vpn-client
 Cisco VPN Client (3DES)
 -* ~amd64 ~x86
-eutils linux-info linux-mod multilib portability toolchain-funcs user versionator
+eutils linux-info linux-mod multilib toolchain-funcs user versionator
 kernel_linux
 
 

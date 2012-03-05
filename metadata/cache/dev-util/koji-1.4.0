@@ -7,7 +7,7 @@ http://fedorahosted.org/koji
 LGPL-2
 RPMs build system tools
 amd64 x86
-eutils multilib portability python toolchain-funcs user
+eutils multilib python toolchain-funcs user
 
 
 
