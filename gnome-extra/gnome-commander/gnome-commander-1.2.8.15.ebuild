@@ -26,23 +26,23 @@ USE_DESC="
 	python: add support for python plugins"
 
 RDEPEND="app-text/gnome-doc-utils
-        >=dev-libs/glib-2.6.0
-        >=gnome-base/gnome-vfs-2.0.0
-        >=gnome-base/libgnome-2.0.0
-        >=gnome-base/libgnomeui-2.4.0
-		>=x11-libs/gtk+-2.8.0
-        || ( app-admin/gamin app-admin/fam )
-		chm?	( dev-libs/chmlib )
-        exif?   ( >=media-gfx/exiv2-0.14 )
-        gsf?    ( >=gnome-extra/libgsf-1.12.0 )
-        taglib? ( >=media-libs/taglib-1.4 )
-		pdf?	( app-text/poppler )
-        python? ( >=dev-lang/python-2.4
-                  >=dev-python/gnome-vfs-python-2.0.0 )"
+	>=dev-libs/glib-2.6.0
+	>=gnome-base/gnome-vfs-2.0.0
+	>=gnome-base/libgnome-2.0.0
+	>=gnome-base/libgnomeui-2.4.0
+	>=x11-libs/gtk+-2.8.0
+	|| ( app-admin/gamin app-admin/fam )
+	chm?	( dev-libs/chmlib )
+	exif?   ( >=media-gfx/exiv2-0.14 )
+	gsf?    ( >=gnome-extra/libgsf-1.12.0 )
+	taglib? ( >=media-libs/taglib-1.4 )
+	pdf?	( app-text/poppler )
+	python? ( >=dev-lang/python-2.4
+		  >=dev-python/gnome-vfs-python-2.0.0 )"
 
 DEPEND="${RDEPEND}
-        >=dev-util/intltool-0.35.0
-        dev-util/pkgconfig"
+	>=dev-util/intltool-0.35.0
+	dev-util/pkgconfig"
 
 DOCS="AUTHORS BUGS ChangeLog NEWS README TODO"
 
