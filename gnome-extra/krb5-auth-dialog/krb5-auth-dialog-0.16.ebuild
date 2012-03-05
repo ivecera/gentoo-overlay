@@ -32,4 +32,3 @@ pkg_setup() {
 			$(use_enable networkmanager network-manager)
 			$(use_with pam)"
 }
-

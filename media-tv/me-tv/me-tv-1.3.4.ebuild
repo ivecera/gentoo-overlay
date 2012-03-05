@@ -39,5 +39,3 @@ src_configure() {
 src_compile() {
 	      gnome2_src_compile
 }
-
-
