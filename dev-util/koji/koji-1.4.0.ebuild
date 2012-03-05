@@ -28,7 +28,6 @@ src_compile() {
 }
 
 src_install() {
-	cd "${S}"
 	emake -j1 DESTDIR="${D}" PKGDIR="$(python_get_sitedir)/${PN}" -C koji \
 		install
 	dodir /etc
