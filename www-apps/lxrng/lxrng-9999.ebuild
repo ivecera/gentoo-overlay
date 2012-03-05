@@ -11,7 +11,7 @@ HOMEPAGE="http://lxr.linux.no/"
 EGIT_REPO_URI="git://lxr.linux.no/git/lxrng.git"
 
 LICENSE="GPL-2"
-KEYWORDS="~amd64 ppc ~x86"
+KEYWORDS="~amd64 ~x86"
 IUSE="pdf png"
 WEBAPP_MANUAL_SLOT="yes"
 SLOT="0"

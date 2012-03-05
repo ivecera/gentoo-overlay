@@ -6,7 +6,7 @@ dev-perl/Search-Xapian dev-perl/DBD-Pg dev-perl/Cgi-Simple dev-perl/CGI-Ajax dev
 http://lxr.linux.no/
 GPL-2
 experimental fork of the LXR software by lxr.linux.no
-~amd64 ppc ~x86
+~amd64 ~x86
 base depend.apache eutils git multilib perl-module toolchain-funcs user webapp
 pdf png vhosts
 
