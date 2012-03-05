@@ -1,4 +1,4 @@
-dev-perl/Search-Xapian dev-perl/DBD-Pg dev-perl/Cgi-Simple dev-perl/CGI-Ajax dev-perl/HTML-Parser dev-perl/Template-Toolkit dev-perl/PerlIO-gzip dev-perl/Term-ProgressBar dev-perl/Apache-Reload dev-perl/Devel-Size dev-util/ctags =www-servers/apache-2* dev-lang/perl[-build] >=app-admin/webapp-config-1.50.15 >=dev-vcs/git-1.6
+dev-perl/Search-Xapian dev-perl/DBD-Pg dev-perl/Cgi-Simple dev-perl/CGI-Ajax dev-perl/HTML-Parser dev-perl/Template-Toolkit dev-perl/PerlIO-gzip dev-perl/Term-ProgressBar dev-perl/Apache-Reload dev-perl/Devel-Size dev-util/ctags =www-servers/apache-2* dev-lang/perl[-build] >=app-admin/webapp-config-1.50.15 dev-vcs/git
 dev-perl/Search-Xapian dev-perl/DBD-Pg dev-perl/Cgi-Simple dev-perl/CGI-Ajax dev-perl/HTML-Parser dev-perl/Template-Toolkit dev-perl/PerlIO-gzip dev-perl/Term-ProgressBar dev-perl/Apache-Reload dev-perl/Devel-Size dev-util/ctags =www-servers/apache-2* dev-lang/perl[-build] >=app-admin/webapp-config-1.50.15
 0
 
@@ -6,8 +6,8 @@ dev-perl/Search-Xapian dev-perl/DBD-Pg dev-perl/Cgi-Simple dev-perl/CGI-Ajax dev
 http://lxr.linux.no/
 GPL-2
 experimental fork of the LXR software by lxr.linux.no
-~amd64 ~x86
-base depend.apache eutils git multilib perl-module toolchain-funcs user webapp
+
+base depend.apache eutils git-2 multilib perl-module toolchain-funcs user webapp
 pdf png vhosts
 
 
