@@ -82,7 +82,7 @@ src_prepare() {
 	# not strictly necessary to fix this
 	sed -i 's/, "-Werror"//' "${S}/tools/python/setup.py" || die "failed to re-set setup.py"
 
-	epatch ${FILESDIR}/${PV}-msr.patch
+	epatch "${FILESDIR}/${PV}-msr.patch"
 }
 
 src_configure() {

@@ -22,9 +22,10 @@ DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
 
 src_prepare() {
-	rm -rf ${S}/src/libpng
-	sed -i -e 's#libpng12#libpng#g' ${S}/wscript ${S}/src/wscript_build || die
-	sed -i -e 's#voidp#void*#g' ${S}/src/texture.cpp || die
+	rm -rf "${S}/src/libpng"
+	sed -i -e 's#libpng12#libpng#g' "${S}/wscript" "${S}/src/wscript_build" \
+		|| die
+	sed -i -e 's#voidp#void*#g' "${S}/src/texture.cpp" || die
 }
 
 src_configure() {
