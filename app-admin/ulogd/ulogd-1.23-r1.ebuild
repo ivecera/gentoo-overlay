@@ -16,6 +16,7 @@ LICENSE="GPL-2"
 KEYWORDS="amd64 ppc -sparc x86"
 IUSE="mysql postgres"
 
+RDEPEND=""
 DEPEND="net-firewall/iptables
 	mysql? ( virtual/mysql )
 	postgres? ( dev-db/postgresql-server )"
