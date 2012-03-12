@@ -1,5 +1,5 @@
-media-libs/libpng media-libs/mesa x11-libs/libX11 dev-util/pkgconfig
-media-libs/libpng media-libs/mesa x11-libs/libX11
+media-libs/libpng media-libs/mesa[gles2?] x11-libs/libX11 dev-util/pkgconfig
+media-libs/libpng media-libs/mesa[gles2?] x11-libs/libX11
 0
 http://launchpad.net/glmark2/trunk/2012.02/+download/glmark2-2012.02.tar.gz
 mirror
@@ -8,7 +8,7 @@ GPL-3
 Opengl test suite
 ~amd64 ~x86
 base eutils multilib toolchain-funcs user waf-utils
-
+gles2
 
 
 
