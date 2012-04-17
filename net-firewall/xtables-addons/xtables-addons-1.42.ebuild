@@ -15,7 +15,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="modules"
 RESTRICT="mirror"
 
-MODULES="quota2 psd pknock lscan length2 ipv4options ipset6 ipp2p iface gradm geoip fuzzy condition tee tarpit sysrq steal rawnat logmark ipmark echo dnetmap dhcpmac delude checksum chaos account"
+MODULES="quota2 psd pknock lscan length2 ipv4options ipp2p iface gradm geoip fuzzy condition tee tarpit sysrq steal rawnat logmark ipmark echo dnetmap dhcpmac delude checksum chaos account"
 
 for mod in ${MODULES}; do
 	IUSE="${IUSE} xtables_addons_${mod}"
@@ -24,9 +24,6 @@ done
 DEPEND=">=net-firewall/iptables-1.4.5"
 
 RDEPEND="${DEPEND}
-	xtables_addons_ipset6? (
-		!net-firewall/ipset
-		net-libs/libmnl )
 	xtables_addons_geoip? ( virtual/perl-Getopt-Long
 		dev-perl/Text-CSV_XS )"
 
@@ -62,11 +59,8 @@ pkg_setup()	{
 		linux-mod_pkg_setup
 
 		if ! linux_chkconfig_present IPV6; then
-			SKIP_IPV6_MODULES="ip6table_rawpost ipset6"
+			SKIP_IPV6_MODULES="ip6table_rawpost"
 			ewarn "No IPV6 support in kernel. Disabling: ${SKIP_IPV6_MODULES}"
-		fi
-		if use xtables_addons_ipset6 && kernel_is -lt 2 6 35; then
-			die "${PN} with ipset requires kernel version >= 2.6.35"
 		fi
 		kernel_is -lt 2 6 29 && die "${PN} requires kernel version >= 2.6.29"
 		XA_check4internal_module tee "2 6 35" NETFILTER_XT_TARGET_TEE
