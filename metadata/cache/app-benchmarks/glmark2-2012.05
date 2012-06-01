@@ -1,7 +1,7 @@
-media-libs/libpng media-libs/mesa x11-libs/libX11 dev-util/pkgconfig
+media-libs/libpng media-libs/mesa x11-libs/libX11 dev-util/pkgconfig dev-lang/python !dev-lang/python[-threads]
 media-libs/libpng media-libs/mesa x11-libs/libX11
 0
-http://launchpad.net/glmark2/2011.11/2011.11/+download/glmark2-2011.11.tar.gz
+http://launchpad.net/glmark2/trunk/2012.05/+download/glmark2-2012.05.tar.gz
 mirror
 https://launchpad.net/glmark2
 GPL-3
