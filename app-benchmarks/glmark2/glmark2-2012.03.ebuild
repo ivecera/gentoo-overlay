@@ -13,11 +13,11 @@ SRC_URI="http://launchpad.net/${PN}/trunk/${PV}/+download/${P}.tar.gz"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="gles2"
+IUSE=""
 RESTRICT="mirror"
 
 RDEPEND="media-libs/libpng
-	media-libs/mesa[gles2?]
+	media-libs/mesa
 	x11-libs/libX11"
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
@@ -36,6 +36,5 @@ src_configure() {
 	CCFLAGS="${CFLAGS}" LINKFLAGS="${LDFLAGS}" "${WAF_BINARY}" \
 		--prefix=/usr \
 		--enable-gl \
-		$(use_enable gles2 glesv2) \
 		configure || die "configure failed"
 }
