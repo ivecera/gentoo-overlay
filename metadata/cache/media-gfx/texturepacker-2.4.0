@@ -1,0 +1,22 @@
+>=x11-libs/qt-core-4.7.2 >=x11-libs/qt-gui-4.7.2 >=x11-libs/qt-opengl-4.7.2 >=x11-libs/qt-webkit-4.7.2 >=sys-apps/sed-4
+>=x11-libs/qt-core-4.7.2 >=x11-libs/qt-gui-4.7.2 >=x11-libs/qt-opengl-4.7.2 >=x11-libs/qt-webkit-4.7.2
+0
+http://www.codeandweb.com/download/texturepacker/2.4.0/TexturePacker-2.4.0-ubuntu64.deb
+mirror
+http://www.texturepacker.com/
+GPL-2
+Sprite sheet creator and image optimizer
+amd64
+eutils fdo-mime gnome2-utils multilib toolchain-funcs unpacker user
+
+
+
+
+4
+
+install postinst postrm preinst unpack
+
+
+
+
+
