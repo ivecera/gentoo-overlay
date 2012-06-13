@@ -12,7 +12,7 @@ SRC_URI="http://ftp.gnome.org/pub/GNOME/sources/krb5-auth-dialog/3.2/${P}.tar.bz
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="caps networkmanager pam"
 
 RDEPEND="virtual/krb5
