@@ -1,0 +1,12 @@
+diff -uNrp glmark2-2012.07.orig/src/canvas-x11-glx.cpp glmark2-2012.07/src/canvas-x11-glx.cpp
+--- glmark2-2012.07.orig/src/canvas-x11-glx.cpp	2012-07-19 11:23:12.000000000 +0200
++++ glmark2-2012.07/src/canvas-x11-glx.cpp	2012-08-08 14:28:41.202105273 +0200
+@@ -60,7 +60,7 @@ CanvasX11GLX::make_current()
+         return false;
+     }
+ 
+-    if ((!glXSwapIntervalEXT_ || glXSwapIntervalEXT_(xdpy_, xwin_, 0)) &&
++    if ((!glXSwapIntervalEXT_ || (glXSwapIntervalEXT_(xdpy_, xwin_, 0), 0)) &&
+         (!glXSwapIntervalMESA_ || glXSwapIntervalMESA_(0)))
+     {
+         Log::info("** Failed to set swap interval. Results may be bounded above by refresh rate.\n");
