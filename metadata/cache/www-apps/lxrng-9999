@@ -7,7 +7,7 @@ http://lxr.linux.no/
 GPL-2
 experimental fork of the LXR software by lxr.linux.no
 
-base depend.apache eutils git-2 multilib multiprocessing perl-module toolchain-funcs user webapp
+base depend.apache eutils git-2 multilib perl-module toolchain-funcs user webapp
 pdf png vhosts
 
 
