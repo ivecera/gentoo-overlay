@@ -1,0 +1,12 @@
+diff -uNrp mediatomb-0.12.1.orig/src/metadata/ffmpeg_handler.cc mediatomb-0.12.1/src/metadata/ffmpeg_handler.cc
+--- mediatomb-0.12.1.orig/src/metadata/ffmpeg_handler.cc	2013-01-04 12:59:20.981269167 +0100
++++ mediatomb-0.12.1/src/metadata/ffmpeg_handler.cc	2013-01-04 13:00:43.490539590 +0100
+@@ -281,7 +281,7 @@ void FfmpegHandler::fillMetadata(Ref<Cds
+     int x = 0;
+     int y = 0;
+ 
+-	AVFormatContext *pFormatCtx;
++	AVFormatContext *pFormatCtx = NULL;
+ 	
+ 	// Suppress all log messages
+ 	av_log_set_callback(FfmpegNoOutputStub);
