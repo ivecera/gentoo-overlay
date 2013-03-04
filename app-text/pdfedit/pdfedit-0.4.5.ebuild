@@ -16,9 +16,9 @@ KEYWORDS="amd64 x86"
 IUSE="+manual"
 
 RDEPEND="
+	dev-qt/qt-meta:3
 	media-libs/freetype:2
-	media-libs/t1lib
-	x11-libs/qt-meta:3"
+	media-libs/t1lib"
 DEPEND="${RDEPEND}
 	dev-libs/boost
 	manual? ( app-text/docbook-xml-dtd:4.2 dev-libs/libxslt )"
