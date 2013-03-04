@@ -19,7 +19,7 @@ LICENSE="|| ( QPL-1.0 GPL-2 GPL-3 )"
 
 SLOT="3"
 KEYWORDS="alpha amd64 hppa ia64 ~mips ppc ~ppc64 sparc x86 ~x86-fbsd"
-IUSE="cups debug doc examples firebird ipv6 mysql nas nis opengl postgres sqlite xinerama immqt immqt-bc"
+IUSE="cups debug doc examples firebird ipv6 mysql nas nis odbc opengl postgres sqlite xinerama immqt immqt-bc"
 
 RDEPEND="
 	virtual/jpeg
@@ -45,6 +45,7 @@ DEPEND="${RDEPEND}
 	xinerama? ( x11-proto/xineramaproto )
 	immqt? ( x11-proto/xineramaproto )
 	immqt-bc? ( x11-proto/xineramaproto )"
+PDEPEND="odbc? ( ~dev-db/qt-unixODBC-$PV )"
 
 S="${WORKDIR}/qt-x11-${SRCTYPE}-${PV}"
 
