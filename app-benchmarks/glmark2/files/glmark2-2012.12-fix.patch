@@ -1,0 +1,12 @@
+diff -uNrp glmark2-2012.12.old/src/egl-state.cpp glmark2-2012.12/src/egl-state.cpp
+--- glmark2-2012.12.old/src/egl-state.cpp	2012-12-18 20:45:45.000000000 +0100
++++ glmark2-2012.12/src/egl-state.cpp	2013-03-04 15:11:16.100877068 +0100
+@@ -290,7 +290,7 @@ EGLState::init_display(EGLNativeDisplayT
+ bool
+ EGLState::init_surface(EGLNativeWindowType native_window)
+ {
+-    native_window_ = reinterpret_cast<EGLNativeWindowType>(native_window);
++    native_window_ = native_window;
+ 
+     return gotValidSurface();
+ }
