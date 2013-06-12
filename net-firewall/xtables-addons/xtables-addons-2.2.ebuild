@@ -1,8 +1,9 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header$
+# $Header: /var/cvsroot/gentoo-x86/net-firewall/xtables-addons/xtables-addons-2.1.ebuild,v 1.4 2013/04/01 16:47:30 pinkbyte Exp $
 
-EAPI="4"
+EAPI="5"
+
 inherit eutils linux-info linux-mod multilib
 
 DESCRIPTION="extensions not yet accepted in the main kernel/iptables (patch-o-matic(-ng) successor)"
@@ -11,9 +12,8 @@ SRC_URI="mirror://sourceforge/xtables-addons/${P}.tar.xz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="modules"
-RESTRICT="mirror"
 
 MODULES="quota2 psd pknock lscan length2 ipv4options ipp2p iface gradm geoip fuzzy condition tarpit sysrq steal rawnat logmark ipmark echo dnetmap dhcpmac delude chaos account"
 
@@ -24,14 +24,19 @@ done
 DEPEND=">=net-firewall/iptables-1.4.5"
 
 RDEPEND="${DEPEND}
-	xtables_addons_geoip? ( virtual/perl-Getopt-Long
-		dev-perl/Text-CSV_XS )"
+	xtables_addons_geoip? (
+		app-arch/unzip
+		dev-perl/Text-CSV_XS
+		virtual/perl-Getopt-Long
+	)
+"
 
 DEPEND="${DEPEND}
 	virtual/linux-sources"
 
 SKIP_MODULES=""
 
+# XA_kernel_check tee "2 6 32"
 XA_check4internal_module() {
 	local mod=${1}
 	local version=${2}
@@ -61,7 +66,7 @@ pkg_setup()	{
 			SKIP_IPV6_MODULES="ip6table_rawpost"
 			ewarn "No IPV6 support in kernel. Disabling: ${SKIP_IPV6_MODULES}"
 		fi
-		kernel_is -lt 3 7 0 && die "${PN} requires kernel version >= 3.7.0"
+		kernel_is -lt 3 7 && die "${P} requires kernel version >= 3.7, if you have older kernel please use 1.x version instead"
 	fi
 }
 
@@ -143,7 +148,7 @@ src_prepare() {
 
 	use xtables_addons_geoip || sed  -e '/^SUBDIRS/{s/geoip//}' -i Makefile.in
 
-	sed -e 's/nf_nat_rule\.h/nf_nat.h/' -i extensions/xt_DNETMAP.c
+	epatch "${FILESDIR}/${P}-userns.patch"
 }
 
 src_configure() {
@@ -155,7 +160,7 @@ src_configure() {
 
 src_compile() {
 	emake CFLAGS="${CFLAGS}" CC="$(tc-getCC)" V=1
-	use modules && BUILD_TARGETS="modules" linux-mod_src_compile
+	use modules && BUILD_PARAMS="V=1" BUILD_TARGETS="modules" linux-mod_src_compile
 }
 
 src_install() {
