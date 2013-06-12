@@ -8,15 +8,27 @@ inherit java-pkg-2 java-ant-2 eutils
 
 MYPN="SweetHome3D"
 MYP="${MYPN}-${PV}"
+MN="3DModels"
+MV="1.2.3"
+MURI="mirror://sourceforge/project/${PN}/${MYPN}-models/${MN}-${MV}"
 DESCRIPTION="Sweet Home 3D is a free interior design application"
 HOMEPAGE="http://www.sweethome3d.com/"
-SRC_URI="mirror://sourceforge/project/${PN}/${MYPN}-source/${MYP}-src/${MYP}-src.zip"
+SRC_URI="
+	mirror://sourceforge/project/${PN}/${MYPN}-source/${MYP}-src/${MYP}-src.zip
+	models? (
+			 ${MURI}/${MN}-Contributions-${MV}.zip
+			 ${MURI}/${MN}-KatorLegaz-${MV}.zip
+			 ${MURI}/${MN}-LucaPresidente-${MV}.zip
+			 ${MURI}/${MN}-Reallusion-${MV}.zip
+			 ${MURI}/${MN}-Scopia-${MV}.zip
+			 ${MURI}/${MN}-Trees-${MV}.zip
+			 )"
 
 LICENSE=""
 RESTRICT="mirror"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="models"
 
 RDEPEND="
 	dev-java/batik
@@ -53,6 +65,9 @@ src_install() {
 	done
 	java-pkg_newjar lib/Loader3DS1_2u.jar Loader3DS.jar
 	java-pkg_newjar lib/sunflow-0.07.3h.jar sunflow.jar
+
+	insinto ${DESTTREE}/share/${PN}
+	doins ${WORKDIR}/*.sh3f
 	
 	java-pkg_dolauncher ${MYPN} --main com.eteks.sweethome3d.SweetHome3D \
 		-Djava.library.path=$(java-config -i sun-java3d-bin) -Xmx1024m
