@@ -65,7 +65,8 @@ src_prepare() {
 	use pax_kernel && epatch "${FILESDIR}/hardened.patch"
 	epatch "${FILESDIR}/${PV_MAJOR}-apic.patch"
 	kernel_is ge 3 7 0 && epatch "${FILESDIR}/${PV_MAJOR}-putname.patch"
-	kernel_is ge 3 10 0 && epatch "${FILESDIR}/${PV_MAJOR}-procfs.patch"
+	kernel_is ge 3 10 0 && epatch "${FILESDIR}/${PV_MAJOR}-3.10.0.patch"
+	kernel_is ge 3 11 0 && epatch "${FILESDIR}/${PV_MAJOR}-3.11.0.patch"
 
 	# Allow user patches so they can support RC kernels and whatever else
 	epatch_user
