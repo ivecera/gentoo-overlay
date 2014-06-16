@@ -1,0 +1,36 @@
+From 1c5cb16b898c81f71db9245449559217b70197f1 Mon Sep 17 00:00:00 2001
+From: Ivan Vecera <ivecera@redhat.com>
+Date: Mon, 16 Jun 2014 15:13:08 +0200
+Subject: [PATCH] 279 getname
+
+Fix for Linux 3.7
+---
+ vmblock-only/linux/control.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/vmblock-only/linux/control.c b/vmblock-only/linux/control.c
+index 7ef8006..cc95a1d 100644
+--- a/vmblock-only/linux/control.c
++++ b/vmblock-only/linux/control.c
+@@ -279,11 +279,17 @@ ExecuteBlockOp(const char __user *buf,                // IN: buffer with name
+    int i;
+    int retval;
+ 
+-   name = getname(buf);
++   name = __getname();
+    if (IS_ERR(name)) {
+       return PTR_ERR(name);
+    }
+ 
++   i = strncpy_from_user(name, buf, PATH_MAX);
++   if (i < 0 || i == PATH_MAX) {
++	   __putname(name);
++	   return -EINVAL;
++   }
++
+    for (i = strlen(name) - 1; i >= 0 && name[i] == '/'; i--) {
+       name[i] = '\0';
+    }
+-- 
+1.8.5.5
+

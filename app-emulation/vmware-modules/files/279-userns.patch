@@ -1,0 +1,64 @@
+From ce18090d99a183137cd31aa442462084153d4b18 Mon Sep 17 00:00:00 2001
+From: Ivan Vecera <ivecera@redhat.com>
+Date: Mon, 16 Jun 2014 15:08:17 +0200
+Subject: [PATCH] 279 userns
+
+Fix for Linux 3.5
+---
+ vmblock-only/linux/inode.c  | 5 +++++
+ vmci-only/linux/driver.c    | 4 ++++
+ vsock-only/linux/af_vsock.c | 4 ++++
+ 3 files changed, 13 insertions(+)
+
+diff --git a/vmblock-only/linux/inode.c b/vmblock-only/linux/inode.c
+index 4d883be..c793d84 100644
+--- a/vmblock-only/linux/inode.c
++++ b/vmblock-only/linux/inode.c
+@@ -135,7 +135,12 @@ InodeOpLookup(struct inode *dir,      // IN: parent directory's inode
+    inode->i_size = INODE_TO_IINFO(inode)->nameLen;
+    inode->i_version = 1;
+    inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 5, 0)
+    inode->i_uid = inode->i_gid = 0;
++#else
++   i_uid_write(inode, 0);
++   i_gid_write(inode, 0);
++#endif
+    inode->i_op = &LinkInodeOps;
+ 
+    d_add(dentry, inode);
+diff --git a/vmci-only/linux/driver.c b/vmci-only/linux/driver.c
+index 79128dc..a9d25c8 100644
+--- a/vmci-only/linux/driver.c
++++ b/vmci-only/linux/driver.c
+@@ -737,7 +737,11 @@ LinuxDriver_Ioctl(struct inode *inode,
+          goto init_release;
+       }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 5, 0)
+       user = current_uid();
++#else
++      user = from_kuid_munged(current_user_ns(), current_uid());
++#endif
+       retval = VMCIContext_InitContext(initBlock.cid, initBlock.flags,
+                                        0 /* Unused */, vmciLinux->userVersion,
+                                        &user, &vmciLinux->context);
+diff --git a/vsock-only/linux/af_vsock.c b/vsock-only/linux/af_vsock.c
+index 694f644..15ce5c9 100644
+--- a/vsock-only/linux/af_vsock.c
++++ b/vsock-only/linux/af_vsock.c
+@@ -2869,7 +2869,11 @@ __VSockVmciCreate(struct net *net,       // IN: Network namespace
+       vsk->connectTimeout = psk->connectTimeout;
+    } else {
+       vsk->trusted = capable(CAP_NET_ADMIN);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 5, 0)
+       vsk->owner = current_uid();
++#else
++      vsk->owner = from_kuid_munged(current_user_ns(), current_uid());
++#endif
+       vsk->queuePairSize = VSOCK_DEFAULT_QP_SIZE;
+       vsk->queuePairMinSize = VSOCK_DEFAULT_QP_SIZE_MIN;
+       vsk->queuePairMaxSize = VSOCK_DEFAULT_QP_SIZE_MAX;
+-- 
+1.8.5.5
+
