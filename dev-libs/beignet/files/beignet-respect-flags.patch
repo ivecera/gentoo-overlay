@@ -1,17 +1,8 @@
---- backend/CMakeLists.txt.orig	2013-04-21 09:24:56.776171382 +0100
-+++ backend/CMakeLists.txt	2013-04-21 09:26:52.083534324 +0100
-@@ -49,7 +49,7 @@
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_DEBUG_MEMORY_FLAG}")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_COMPILE_UTESTS_FLAG}")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-E")
--  set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${LLVM_LFLAGS}")
-+  set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined ${LLVM_LFLAGS}")
-   set (CMAKE_CXX_FLAGS_DEBUG          "-g -DGBE_DEBUG=1")
-   set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DGBE_DEBUG=1")
-   set (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DGBE_DEBUG=0")
---- backend/CMakeLists.txt~	2013-04-27 12:12:43.000000000 +0100
-+++ backend/CMakeLists.txt	2013-04-27 12:21:43.042683969 +0100
-@@ -45,7 +45,7 @@
+diff --git a/backend/CMakeLists.txt b/backend/CMakeLists.txt
+index ca674cf..f571408 100644
+--- a/backend/CMakeLists.txt
++++ b/backend/CMakeLists.txt
+@@ -41,16 +41,16 @@ set (CMAKE_C_CXX_FLAGS -DGBE_COMPILER_AVAILABLE=1)
  if (COMPILER STREQUAL "GCC")
    set (CMAKE_C_CXX_FLAGS "${CMAKE_C_CXX_FLAGS} -funroll-loops -Wstrict-aliasing=2 -fstrict-aliasing -msse2 -msse3 -mssse3 -msse4.1 -fPIC -Wall")
    set (CMAKE_C_CXX_FLAGS "${CMAKE_C_CXX_FLAGS}  ${LLVM_CFLAGS}")
@@ -20,7 +11,9 @@
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_DEBUG_MEMORY_FLAG}")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_COMPILE_UTESTS_FLAG}")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-E")
-@@ -54,7 +54,7 @@
+-  set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${LLVM_LFLAGS}")
++  set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined ${LLVM_LFLAGS}")
+   set (CMAKE_CXX_FLAGS_DEBUG          "-g -DGBE_DEBUG=1")
    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DGBE_DEBUG=1")
    set (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DGBE_DEBUG=0")
    set (CMAKE_CXX_FLAGS_RELEASE        "-O2 -DNDEBUG -DGBE_DEBUG=0")
@@ -29,7 +22,7 @@
    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${GBE_DEBUG_MEMORY_FLAG}")
    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${GBE_COMPILE_UTESTS_FLAG}")
    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-E")
-@@ -64,7 +64,7 @@
+@@ -60,13 +60,13 @@ if (COMPILER STREQUAL "GCC")
    set (CMAKE_C_FLAGS_RELEASE        "-O2 -DNDEBUG -DGBE_DEBUG=0")
  elseif (COMPILER STREQUAL "CLANG")
    set (CMAKE_C_COMPILER             "clang")
@@ -38,8 +31,6 @@
    set (CMAKE_C_FLAGS_DEBUG          "-g -DGBE_DEBUG=1")
    set (CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -DGBE_DEBUG=1")
    set (CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DGBE_DEBUG=0")
-@@ -70,7 +70,7 @@
-   set (CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DGBE_DEBUG=0")
    set (CMAKE_C_FLAGS_RELEASE        "-O2 -DNDEBUG -DGBE_DEBUG=0")
    set (CMAKE_CXX_COMPILER             "clang++")
 -  set (CMAKE_CXX_FLAGS "-fstrict-aliasing -msse2 -fPIC -Wall -Wno-format-security -Wno-invalid-offsetof -std=c++0x")
@@ -47,12 +38,3 @@
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_DEBUG_MEMORY_FLAG}")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_COMPILE_UTESTS_FLAG}")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VISIBILITY_FLAG}")
-@@ -86,7 +86,7 @@
- elseif (COMPILER STREQUAL "ICC")
-   set (CMAKE_CXX_COMPILER "icpc")
-   set (CMAKE_C_COMPILER "icc")
--  set (CMAKE_CXX_FLAGS "-std=c++0x -wd2928 -Wall -fPIC -fstrict-aliasing -fp-model fast -xSSE2")
-+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -wd2928 -Wall -fPIC -fstrict-aliasing -fp-model fast -xSSE2")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_DEBUG_MEMORY_FLAG}")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GBE_COMPILE_UTESTS_FLAG}")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VISIBILITY_FLAG} -Wl,-E")

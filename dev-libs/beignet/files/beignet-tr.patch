@@ -1,0 +1,12 @@
+diff --git a/CMake/FindLLVM.cmake b/CMake/FindLLVM.cmake
+index 556b3a9..cd76082 100644
+--- a/CMake/FindLLVM.cmake
++++ b/CMake/FindLLVM.cmake
+@@ -68,6 +68,7 @@ execute_process(
+ 
+ execute_process(
+   COMMAND ${LLVM_CONFIG_EXECUTABLE} --libs
++  COMMAND tr "\n" " "
+   OUTPUT_VARIABLE LLVM_MODULE_LIBS
+   OUTPUT_STRIP_TRAILING_WHITESPACE
+ )
