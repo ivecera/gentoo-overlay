@@ -1,14 +1,3 @@
-From f463a6454387e815fa2a3cb92273d51687accec3 Mon Sep 17 00:00:00 2001
-From: Ivan Vecera <ivecera@redhat.com>
-Date: Mon, 16 Jun 2014 15:14:10 +0200
-Subject: [PATCH] 279 sk_data_ready
-
-Fix for Linux 3.15
----
- vsock-only/linux/notify.c       | 4 ++++
- vsock-only/linux/notifyQState.c | 4 ++++
- 2 files changed, 8 insertions(+)
-
 diff --git a/vsock-only/linux/notify.c b/vsock-only/linux/notify.c
 index f627956..494e9b2 100644
 --- a/vsock-only/linux/notify.c
@@ -26,7 +15,7 @@ index f627956..494e9b2 100644
  
  
 diff --git a/vsock-only/linux/notifyQState.c b/vsock-only/linux/notifyQState.c
-index f3816d4..6501db6 100644
+index f3816d4..89012ae 100644
 --- a/vsock-only/linux/notifyQState.c
 +++ b/vsock-only/linux/notifyQState.c
 @@ -164,7 +164,11 @@ VSockVmciHandleWrote(struct sock *sk,            // IN
@@ -41,6 +30,15 @@ index f3816d4..6501db6 100644
  }
  
  
--- 
-1.8.5.5
-
+@@ -566,7 +570,11 @@ VSockVmciNotifyPktRecvPostDequeue(struct sock *sk,               // IN
+       }
+ 
+       /* See the comment in VSockVmciNotifyPktSendPostEnqueue */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 15, 0)
+       sk->sk_data_ready(sk, 0);
++#else
++      sk->sk_data_ready(sk);
++#endif
+    }
+ 
+    return err;
