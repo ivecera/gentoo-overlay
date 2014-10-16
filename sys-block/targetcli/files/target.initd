@@ -2,170 +2,117 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-description="The Linux iSCSI target"
+description="Linux-iSCSI.org Target"
 
-depend() {
-	after modules
-	use net
-}
-
+CFS_BASE="/sys/kernel/config"
+CFS_TGT="${CFS_BASE}/target"
 CORE_MODS="target_core_mod target_core_pscsi target_core_iblock target_core_file"
 STARTUP_CONFIG="/etc/target/scsi_target.lio"
 
 load_specfiles() {
-	FABRIC_MODS="$(python2 2>/dev/null <<EOF
-from rtslib import RTSRoot
-print(" ".join(["%s:%s" % (fm.spec["kernel_module"],
-			   fm.spec["configfs_group"])
-			   for fm in RTSRoot().fabric_modules]))
-EOF
-)"
+	FABRIC_MODS=$(echo \
+		'from rtslib import list_specfiles, parse_specfile;' \
+		'print(" ".join(["%(kernel_module)s:%(configfs_group)s" %' \
+		'parse_specfile(spec) for spec in list_specfiles()]))' | \
+		python2 2>/dev/null)
+}
+
+check_install() {
+	ebegin "Checking RTSlib installation"
+	echo "from rtslib import Config" | python2 2>/dev/null
+	eend $?
 }
 
 check_configfs() {
-	grep configfs /proc/mounts > /dev/null || {
-		eerror "ConfigFS is not mounted"
-		eend 1
-	}
-
-	CFS_BASE="$(awk '/configfs/{print $2}' /proc/mounts)"
-	CFS_TGT="${CFS_BASE}/target"
+	if ! test -d "$CFS_BASE" || ! mountinfo -q "$CFS_BASE"; then
+		eerror "Config filesystem is not mounted"
+		return 1
+	fi
 }
 
 load_modules() {
-	for MODULE in ${CORE_MODS}; do
-		ebegin "Loading module ${MODULE}"
-		modprobe -q ${MODULE}
-		eend $?
-	done
-}
-
-start() {
-	check_configfs
-	load_specfiles
-	load_modules
-}
-
-TCM_CFS_DIR="/sys/kernel/config/target/core"
-LIO_CFS_DIR="/sys/kernel/config/target/iscsi"
-TCM_NODE="/usr/sbin/tcm_node"
-LIO_NODE="/usr/sbin/lio_node"
-TCM_FABRIC="/usr/sbin/tcm_fabric"
-CONFIGFS_SCRIPT_DIR="/etc/target"
-TCM_CONFIGFS_SCRIPT="/etc/target/tcm_start.sh"
-LIO_CONFIGFS_SCRIPT="/etc/target/lio_start.sh"
-TCM_CORE_MODULE="target_core_mod"
-TCM_CORE_IO_MODULES="target_core_iblock target_core_file target_core_pscsi"
-FABRICS_MODULES="tcm_fc tcm_loop ib_srpt"
-LIO_MODULE="iscsi_target_mod"
-
-checkconfig() {
-	if ! modinfo ${TCM_CORE_MODULE} > /dev/null 2>&1 ; then
-		eerror "Target Core modules not found!"
-		return 1
-	elif ! modinfo ${LIO_MODULE} > /dev/null 2>&1 ; then
-		eerror "Linux iSCSI modules not found!"
-		return 1
-	elif [ ! -f ${TCM_CONFIGFS_SCRIPT} ]; then
-		eerror "${TCM_CONFIGFS_SCRIPT} does not exist. run targetcli to configure your target!"
-		return 1
-	elif [ ! -f ${LIO_CONFIGFS_SCRIPT} ]; then
-		eerror "${LIO_CONFIGFS_SCRIPT} does not exist. run targetcli to configure your target!"
-		return 1
-	fi
-}
-
-fabrics_start() {
-	ebegin "Starting Targets: "
-	for module in ${FABRICS_MODULES}; do
-		if modinfo $module > /dev/null 2>&1 ; then
+	for module in ${CORE_MODS}; do
+		if modinfo "${module}" > /dev/null 2>&1 ; then
 			ebegin "Loading ${module}"
-			modprobe ${module}
+			modprobe -q "${module}"
 			eend $?
 		fi
 	done
-	for cfgscript in ${CONFIGFS_SCRIPT_DIR}/*.sh; do
-		if [ ! -f ${cfgscript} ]; then
-			continue
+
+	for mod_spec in ${FABRIC_MODS}; do
+		module="$(echo ${mod_spec} | awk -F : '{print $1}')"
+
+		if modinfo "${module}" > /dev/null 2>&1 ; then
+			ebegin "Loading ${module}"
+			modprobe -q "${module}"
+			eend $?
 		fi
-		# target core is handled in tcm_start
-		if [ ${cfgscript} == ${TCM_CONFIGFS_SCRIPT} ]; then
-			continue
-		fi
-		# iscsi-target fabric module is handled in lio_target_start
-		if [ ${cfgscript} == ${LIO_CONFIGFS_SCRIPT} ]; then
-			continue
-		fi
-		ebegin "Calling ConfigFS script $cfgscript: "
-		sh ${cfgscript} > /dev/null 2>&1
-		eend $?
 	done
-	eend $?
 }
 
-lio_target_start() {
-	ebegin "Loading iSCSI target modules: ${LIO_MODULE}"
-	modprobe ${LIO_MODULE}
-	eend $?
-	ebegin "Configuring iSCSI target iscsi_target_mod"
-	sh ${LIO_CONFIGFS_SCRIPT} > /dev/null 2>&1
-	eend $?
-}
+unload_modules() {
+	for mod_spec in ${FABRIC_MODS}; do
+		module="$(echo ${mod_spec} | awk -F : '{print $1}')"
+		group="${CFS_TGT}/$(echo ${mod_spec} | awk -F : '{print $2}')"
 
-tcm_start() {
-	ebegin "Loading Target Core modules : ${TCM_CORE_MODULE}"
-	modprobe ${TCM_CORE_MODULE}
-	eend $?
-	ebegin "Loading Target Core backend modules: "
-	for module in ${TCM_CORE_IO_MODULES} ; do
-		ebegin "${module}"
-		modprobe ${module}
-		eend $?
+		if [ -d "${group}" ]; then
+			rmdir "${group}" 2>/dev/null
+		fi
+
+		if [ -e "/sys/module/${module}/refcnt" ]; then
+			ebegin "Unloading ${module}"
+			rmmod "${module}" 2>/dev/null
+			eend $?
+		fi
 	done
-	eend $?
-	ebegin "Calling ConfigFS script $TCM_CONFIGFS_SCRIPT for target_core_mod"
-	sh ${TCM_CONFIGFS_SCRIPT} > /dev/null 2>&1
-	eend $?
+
+	modules="$(echo ${CORE_MODS} | tac -s ' ')"
+	for module in ${modules}; do
+		if [ -e "/sys/module/${module}/refcnt" ]; then
+			ebegin "Unloading ${module}"
+			rmmod "${module}" 2>/dev/null
+			eend $?
+		fi
+	done
 }
 
-lio_target_stop() {
-	ebegin "Unload Linux-iSCSI.org Fabric module"
-	${LIO_NODE} --unload
-	eend $?
-}
-
-fabrics_stop() {
-	ebegin "Unloading misc fabric modules: "
-	${TCM_FABRIC} --unloadall
-	eend $?
-}
-
-tcm_stop() {
-	ebegin "Unloading Target Core modules: "
-	$TCM_NODE --unload
-	eend $?
-}
-
-nstart() {
-	checkconfig
-	tcm_start
-	lio_target_start
-	fabrics_start
-}
-
-nstop() {
-	lio_target_stop
-	fabrics_stop
-	tcm_stop
-}
-
-nstatus() {
-	if [[ -d ${TCM_CFS_DIR} && -d ${LIO_CFS_DIR} ]]; then
-		einfo "Target core mode status"
-		${TCM_NODE} --listhbas
-		einfo "Linux iSCSI status"
-		${LIO_NODE} --listendpoints
-	else
-		einfo "Target not started (yet)"
+load_config() {
+	if [ -e "${STARTUP_CONFIG}" ]; then
+		ebegin "Loading configuration"
+		echo \
+			"import os, rtslib;" \
+			"config = rtslib.Config();" \
+			"config.load(os.environ['__STARTUP_CONFIG'], allow_new_attrs=True);" \
+			"list(config.apply())" | \
+		__STARTUP_CONFIG="${STARTUP_CONFIG}" python2 2> /dev/null
+		eend $?
 	fi
 }
+
+clear_config() {
+	ebegin "Clearing configuration"
+	python2 2> /dev/null -c \
+		"from rtslib import Config; config = Config(); list(config.apply())"
+	eend $?
+}
+
+depend() {
+	need sysfs
+	after modules
+	use net
+}
+
+start() {
+	load_specfiles
+	ebegin "Starting Linux target"
+	check_install && check_configfs && load_modules && load_config
+	eend $?
+}
+
+stop() {
+	load_specfiles
+	ebegin "Stopping Linux target"
+	clear_config && unload_modules
+	eend $?
+}
+

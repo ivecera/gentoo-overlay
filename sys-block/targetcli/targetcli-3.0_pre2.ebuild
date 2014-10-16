@@ -23,9 +23,9 @@ IUSE=""
 DEPEND="
 	dev-python/configshell
 	dev-python/prettytable
-	>dev-python/rtslib-3
+	>=dev-python/rtslib-3
 	!sys-block/lio-utils
-	"
+"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${PN}-${MY_PV}"
@@ -48,5 +48,6 @@ src_install() {
 
 	dodoc COPYING
 	doman doc/${PN}.8
+	keepdir /etc/target
+	newinitd "${FILESDIR}/target.initd" target
 }
-

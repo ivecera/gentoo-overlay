@@ -23,7 +23,7 @@ DEPEND="
 	epydoc? ( dev-python/epydoc )
 	dev-python/pyparsing
 	>=dev-python/urwid-0.9.9
-	"
+"
 RDEPEND="${DEPEND}"
 
 src_prepare() {

@@ -25,7 +25,7 @@ DEPEND="
 	dev-python/ipaddr
 	dev-python/netifaces
 	dev-python/pyparsing
-	"
+"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${PN}-${MY_PV}"
