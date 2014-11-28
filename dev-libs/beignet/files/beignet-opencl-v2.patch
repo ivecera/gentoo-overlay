@@ -1,0 +1,47 @@
+diff -uNrp beignet-1.0.0.orig/benchmark/CMakeLists.txt beignet-1.0.0/benchmark/CMakeLists.txt
+--- beignet-1.0.0.orig/benchmark/CMakeLists.txt	2014-11-26 16:08:34.143632163 +0100
++++ beignet-1.0.0/benchmark/CMakeLists.txt	2014-11-26 16:12:13.356771750 +0100
+@@ -20,7 +20,7 @@ SET(CMAKE_C_FLAGS "-DBUILD_BENCHMARK ${C
+ ADD_LIBRARY(benchmarks SHARED ${ADDMATHFUNC} ${benchmark_sources})
+ 
+ #TARGET_LINK_LIBRARIES(benchmarks cl m ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+-TARGET_LINK_LIBRARIES(benchmarks cl m)
++TARGET_LINK_LIBRARIES(benchmarks OpenCL m)
+ 
+ ADD_EXECUTABLE(benchmark_run benchmark_run.cpp)
+ TARGET_LINK_LIBRARIES(benchmark_run benchmarks)
+diff -uNrp beignet-1.0.0.orig/src/CMakeLists.txt beignet-1.0.0/src/CMakeLists.txt
+--- beignet-1.0.0.orig/src/CMakeLists.txt	2014-11-26 16:08:34.163821604 +0100
++++ beignet-1.0.0/src/CMakeLists.txt	2014-11-26 16:11:22.472266881 +0100
+@@ -123,10 +123,10 @@ add_custom_target(${GIT_SHA1} ALL
+ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-Bsymbolic,--allow-shlib-undefined")
+ 
+ link_directories (${LLVM_LIBRARY_DIR} ${DRM_LIBDIR})
+-add_library(cl SHARED ${OPENCL_SRC})
+-ADD_DEPENDENCIES(cl ${GIT_SHA1})
++add_library(OpenCL SHARED ${OPENCL_SRC})
++ADD_DEPENDENCIES(OpenCL ${GIT_SHA1})
+ target_link_libraries(
+-                      cl
++                      OpenCL
+                       ${X11_LIBRARIES}
+                       ${XEXT_LIBRARIES}
+                       ${XFIXES_LIBRARIES}
+@@ -136,4 +136,4 @@ target_link_libraries(
+                       ${CMAKE_DL_LIBS}
+                       ${OPENGL_LIBRARIES}
+                       ${OPTIONAL_EGL_LIBRARY})
+-install (TARGETS cl LIBRARY DESTINATION ${BEIGNET_INSTALL_DIR})
++install (TARGETS OpenCL LIBRARY DESTINATION ${BEIGNET_INSTALL_DIR})
+diff -uNrp beignet-1.0.0.orig/utests/CMakeLists.txt beignet-1.0.0/utests/CMakeLists.txt
+--- beignet-1.0.0.orig/utests/CMakeLists.txt	2014-11-26 16:08:34.174010539 +0100
++++ beignet-1.0.0/utests/CMakeLists.txt	2014-11-26 16:11:56.660983095 +0100
+@@ -248,7 +248,7 @@ endif ()
+ 
+ ADD_LIBRARY(utests SHARED ${ADDMATHFUNC} ${utests_sources})
+ 
+-TARGET_LINK_LIBRARIES(utests cl m ${OPENGL_LIBRARIES} ${UTESTS_REQUIRED_EGL_LIB} ${CMAKE_THREAD_LIBS_INIT})
++TARGET_LINK_LIBRARIES(utests OpenCL m ${OPENGL_LIBRARIES} ${UTESTS_REQUIRED_EGL_LIB} ${CMAKE_THREAD_LIBS_INIT})
+ 
+ ADD_EXECUTABLE(utest_run utest_run.cpp)
+ TARGET_LINK_LIBRARIES(utest_run utests)
