@@ -1,0 +1,23 @@
+diff -uNrp beignet-1.0.0.orig/CMakeLists.txt beignet-1.0.0/CMakeLists.txt
+--- beignet-1.0.0.orig/CMakeLists.txt	2014-11-26 15:55:07.288973451 +0100
++++ beignet-1.0.0/CMakeLists.txt	2014-11-26 16:00:43.377086522 +0100
+@@ -81,8 +81,8 @@ elseif (COMPILER STREQUAL "CLANG")
+ elseif (COMPILER STREQUAL "ICC")
+   set (CMAKE_C_CXX_FLAGS "${CMAKE_C_CXX_FLAGS}  -wd2928 -Wall -fPIC -fstrict-aliasing -fp-model fast -msse4.1 -Wl,-E")
+ endif ()
+-set (CMAKE_CXX_FLAGS "${CMAKE_C_CXX_FLAGS} -std=c++0x -Wno-invalid-offsetof -fno-rtti")
+-set (CMAKE_C_FLAGS "${CMAKE_C_CXX_FLAGS}")
++set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-invalid-offsetof -fno-rtti")
++set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_C_CXX_FLAGS}")
+ set (CMAKE_CXX_FLAGS_DEBUG          "-O0 -g -DGBE_DEBUG=1")
+ set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DGBE_DEBUG=1")
+ set (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DGBE_DEBUG=0")
+@@ -96,7 +96,7 @@ set (CMAKE_C_FLAGS_RELEASE        "-O2 -
+ #INCLUDE(CMake/FindLLVM.cmake)
+ Find_Package(LLVM 3.3)
+ 
+-set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${LLVM_LDFLAGS}")
++set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined ${LLVM_LDFLAGS}")
+ 
+ # XLib
+ Find_Package(X11)

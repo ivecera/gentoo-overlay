@@ -6,7 +6,7 @@ EAPI=5
 CMAKE_BUILD_TYPE="Release"
 PYTHON_COMPAT=( python{2_6,2_7} )
 
-inherit python-single-r1 cmake-utils git-r3 multilib-minimal
+inherit versionator python-single-r1 cmake-utils git-r3 multilib-minimal
 
 DESCRIPTION="The Beignet GPGPU System for Intel Ivybridge GPUs"
 HOMEPAGE="http://wiki.freedesktop.org/www/Software/Beignet/"
@@ -38,8 +38,13 @@ DEPENDS="${RDEPEND} ${PYTHON_DEPS}"
 src_prepare() {
 	cmake-utils_src_prepare
 
-	epatch "${FILESDIR}/${PN}-respect-flags.patch"
-	epatch "${FILESDIR}/${PN}-opencl.patch"
+	if [[ $(get_major_version) -lt 1 ]]; then
+		epatch "${FILESDIR}/${PN}-respect-flags.patch"
+		epatch "${FILESDIR}/${PN}-opencl.patch"
+	else
+		epatch "${FILESDIR}/${PN}-respect-flags-v2.patch"
+		epatch "${FILESDIR}/${PN}-opencl-v2.patch"
+	fi
 	epatch "${FILESDIR}/${PN}-tr.patch"
 }
 
