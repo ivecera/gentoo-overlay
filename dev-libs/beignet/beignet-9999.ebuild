@@ -41,9 +41,12 @@ src_prepare() {
 	if [[ $(get_major_version) -lt 1 ]]; then
 		epatch "${FILESDIR}/${PN}-respect-flags.patch"
 		epatch "${FILESDIR}/${PN}-opencl.patch"
-	else
+	elif [[ ${PV} = "1.0.0" ]]; then
 		epatch "${FILESDIR}/${PN}-respect-flags-v2.patch"
 		epatch "${FILESDIR}/${PN}-opencl-v2.patch"
+	else
+		epatch "${FILESDIR}/${PN}-respect-flags-v3.patch"
+		epatch "${FILESDIR}/${PN}-opencl-v3.patch"
 	fi
 	epatch "${FILESDIR}/${PN}-tr.patch"
 }
