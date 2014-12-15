@@ -1,0 +1,22 @@
+diff -urpN gst-libav-1.2.4.orig/ext/libav/gstavaudenc.c gst-libav-1.2.4/ext/libav/gstavaudenc.c
+--- gst-libav-1.2.4.orig/ext/libav/gstavaudenc.c	2014-06-26 21:32:51.989182216 -0700
++++ gst-libav-1.2.4/ext/libav/gstavaudenc.c	2014-06-26 21:34:29.155238999 -0700
+@@ -299,7 +299,6 @@ gst_ffmpegaudenc_set_format (GstAudioEnc
+   ffmpegaudenc->context->coder_type = 0;
+   ffmpegaudenc->context->context_model = 0;
+   ffmpegaudenc->context->scenechange_threshold = 0;
+-  ffmpegaudenc->context->inter_threshold = 0;
+ 
+   /* fetch pix_fmt and so on */
+   gst_ffmpeg_audioinfo_to_context (info, ffmpegaudenc->context);
+diff -urpN gst-libav-1.2.4.orig/ext/libav/gstavvidenc.c gst-libav-1.2.4/ext/libav/gstavvidenc.c
+--- gst-libav-1.2.4.orig/ext/libav/gstavvidenc.c	2014-06-26 21:32:51.991182196 -0700
++++ gst-libav-1.2.4/ext/libav/gstavvidenc.c	2014-06-26 21:34:29.157238980 -0700
+@@ -347,7 +347,6 @@ gst_ffmpegvidenc_set_format (GstVideoEnc
+   ffmpegenc->context->coder_type = 0;
+   ffmpegenc->context->context_model = 0;
+   ffmpegenc->context->scenechange_threshold = 0;
+-  ffmpegenc->context->inter_threshold = 0;
+ 
+   /* and last but not least the pass; CBR, 2-pass, etc */
+   ffmpegenc->context->flags |= ffmpegenc->pass;

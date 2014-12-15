@@ -1,0 +1,47 @@
+diff -urpN gst-libav-1.2.4.orig/ext/libav/gstavdemux.c gst-libav-1.2.4/ext/libav/gstavdemux.c
+--- gst-libav-1.2.4.orig/ext/libav/gstavdemux.c	2013-09-24 06:06:58.000000000 -0700
++++ gst-libav-1.2.4/ext/libav/gstavdemux.c	2014-06-26 21:41:29.998152432 -0700
+@@ -748,8 +748,8 @@ gst_ffmpegdemux_src_query (GstPad * pad,
+           break;
+         case GST_FORMAT_DEFAULT:
+           gst_query_set_position (query, GST_FORMAT_DEFAULT,
+-              gst_util_uint64_scale (timeposition, avstream->r_frame_rate.num,
+-                  GST_SECOND * avstream->r_frame_rate.den));
++              gst_util_uint64_scale (timeposition, avstream->avg_frame_rate.num,
++                  GST_SECOND * avstream->avg_frame_rate.den));
+           res = TRUE;
+           break;
+         case GST_FORMAT_BYTES:
+@@ -785,8 +785,8 @@ gst_ffmpegdemux_src_query (GstPad * pad,
+           break;
+         case GST_FORMAT_DEFAULT:
+           gst_query_set_duration (query, GST_FORMAT_DEFAULT,
+-              gst_util_uint64_scale (timeduration, avstream->r_frame_rate.num,
+-                  GST_SECOND * avstream->r_frame_rate.den));
++              gst_util_uint64_scale (timeduration, avstream->avg_frame_rate.num,
++                  GST_SECOND * avstream->avg_frame_rate.den));
+           res = TRUE;
+           break;
+         case GST_FORMAT_BYTES:
+@@ -865,8 +865,8 @@ gst_ffmpegdemux_src_convert (GstPad * pa
+       switch (*dest_fmt) {
+         case GST_FORMAT_DEFAULT:
+           *dest_value = gst_util_uint64_scale (src_value,
+-              avstream->r_frame_rate.num,
+-              GST_SECOND * avstream->r_frame_rate.den);
++              avstream->avg_frame_rate.num,
++              GST_SECOND * avstream->avg_frame_rate.den);
+           break;
+         default:
+           res = FALSE;
+@@ -877,8 +877,8 @@ gst_ffmpegdemux_src_convert (GstPad * pa
+       switch (*dest_fmt) {
+         case GST_FORMAT_TIME:
+           *dest_value = gst_util_uint64_scale (src_value,
+-              GST_SECOND * avstream->r_frame_rate.num,
+-              avstream->r_frame_rate.den);
++              GST_SECOND * avstream->avg_frame_rate.num,
++              avstream->avg_frame_rate.den);
+           break;
+         default:
+           res = FALSE;
