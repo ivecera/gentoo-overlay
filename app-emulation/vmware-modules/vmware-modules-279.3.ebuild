@@ -88,6 +88,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PV_MAJOR}-deprecated.patch"
 	epatch "${FILESDIR}/${PV_MAJOR}-sk_data_ready.patch"
 	epatch "${FILESDIR}/${PV_MAJOR}-readlink_copy.patch"
+	epatch "${FILESDIR}/${PV_MAJOR}-netdev_alloc-3.17.patch"
 
 	# Allow user patches so they can support RC kernels and whatever else
 	epatch_user

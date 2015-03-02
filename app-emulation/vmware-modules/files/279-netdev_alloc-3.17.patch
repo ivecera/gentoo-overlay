@@ -1,0 +1,16 @@
+diff --git a/vmnet-only/netif.c b/vmnet-only/netif.c
+index e3d1bf2..15fd7f7 100644
+--- a/vmnet-only/netif.c
++++ b/vmnet-only/netif.c
+@@ -149,7 +149,11 @@ VNetNetIf_Create(char *devName,  // IN:
+    memcpy(deviceName, devName, sizeof deviceName);
+    NULL_TERMINATE_STRING(deviceName);
+ 
++#if !COMPAT_LINUX_VERSION_CHECK_LT(3, 17, 0)
++   dev = alloc_netdev(sizeof *netIf, deviceName, NET_NAME_UNKNOWN, VNetNetIfSetup);
++#else
+    dev = alloc_netdev(sizeof *netIf, deviceName, VNetNetIfSetup);
++#endif
+    if (!dev) {
+       retval = -ENOMEM;
+       goto out;
