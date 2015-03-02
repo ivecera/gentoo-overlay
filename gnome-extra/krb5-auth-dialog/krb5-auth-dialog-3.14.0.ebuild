@@ -1,6 +1,5 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI=4
 
@@ -8,7 +7,7 @@ inherit eutils gnome2
 
 DESCRIPTION="Kerberos 5 authentication dialog"
 HOMEPAGE="https://honk.sigxcpu.org/piki/projects/krb5-auth-dialog/"
-SRC_URI="http://download.gnome.org/sources/krb5-auth-dialog/3.8/${P}.tar.xz"
+SRC_URI="http://download.gnome.org/sources/krb5-auth-dialog/3.14/${P}.tar.xz"
 
 LICENSE="GPL-3"
 SLOT="0"
