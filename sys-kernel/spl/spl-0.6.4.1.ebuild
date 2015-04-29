@@ -12,9 +12,8 @@ if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="https://github.com/zfsonlinux/${PN}.git"
 else
 	inherit eutils versionator
-	MY_PV=$(replace_version_separator 3 '-')
-	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${PN}-${MY_PV}.tar.gz"
-	S="${WORKDIR}/${PN}-${PN}-${MY_PV}"
+	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${P}.tar.gz"
+	S="${WORKDIR}/${PN}-${P}"
 	KEYWORDS="~amd64"
 fi
 
