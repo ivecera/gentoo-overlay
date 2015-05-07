@@ -1,6 +1,6 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sys-fs/zfs-kmod/zfs-kmod-0.6.3.ebuild,v 1.6 2014/12/01 05:30:02 ryao Exp $
+# $Header$
 
 EAPI="4"
 
@@ -12,7 +12,6 @@ inherit flag-o-matic linux-info linux-mod toolchain-funcs autotools-utils
 
 if [ ${PV} == "9999" ] ; then
 	inherit git-2
-	MY_PV=9999
 	EGIT_REPO_URI="https://github.com/zfsonlinux/zfs.git"
 else
 	inherit eutils versionator
@@ -65,7 +64,7 @@ pkg_setup() {
 			DEVTMPFS
 	"
 
-	kernel_is ge 2 6 26 || die "Linux 2.6.26 or newer required"
+	kernel_is ge 2 6 32 || die "Linux 2.6.32 or newer required"
 
 	[ ${PV} != "9999" ] && \
 		{ kernel_is le 4 0 || die "Linux 4.0 is the latest supported version."; }
@@ -128,10 +127,17 @@ pkg_postinst() {
 		ewarn "at least 256M and decreasing zfs_arc_max to some value less than that."
 	fi
 
-	ewarn "This version of ZFSOnLinux includes support for features flags."
-	ewarn "If you upgrade your pools to make use of feature flags, you will lose"
-	ewarn "the ability to import them using older versions of ZFSOnLinux."
-	ewarn "Any new pools will be created with feature flag support and will"
-	ewarn "not be compatible with older versions of ZFSOnLinux. To create a new"
-	ewarn "pool that is backward compatible, use zpool create -o version=28 ..."
+	ewarn "This version of ZFSOnLinux includes support for new feature flags"
+	ewarn "that are incompatible with ZFSOnLinux 0.6.3 and GRUB2 support for"
+	ewarn "/boot with the new feature flags is not yet available."
+	ewarn "Do *NOT* upgrade root pools to use the new feature flags."
+	ewarn "Any new pools will be created with the new feature flags by default"
+	ewarn "and will not be compatible with older versions of ZFSOnLinux. To"
+	ewarn "create a newpool that is backward compatible, use "
+	ewarn "zpool create -o version=28 ..."
+	ewarn "Then explicitly enable older features. Note that the LZ4 feature has"
+	ewarn "been upgraded to support metadata compression and has not been"
+	ewarn "tested against the older GRUB2 code base. GRUB2 support will be"
+	ewarn "updated as soon as the GRUB2 developers and Open ZFS community write"
+	ewarn "GRUB2 patchese that pass mutual review."
 }
