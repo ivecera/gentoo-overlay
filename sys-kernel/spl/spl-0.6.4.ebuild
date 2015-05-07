@@ -1,6 +1,6 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sys-kernel/spl/spl-0.6.3.ebuild,v 1.6 2014/12/12 07:51:56 ryao Exp $
+# $Header$
 
 EAPI="4"
 AUTOTOOLS_AUTORECONF="1"
@@ -12,9 +12,8 @@ if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="https://github.com/zfsonlinux/${PN}.git"
 else
 	inherit eutils versionator
-	MY_PV=$(replace_version_separator 3 '-')
-	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${PN}-${MY_PV}.tar.gz"
-	S="${WORKDIR}/${PN}-${PN}-${MY_PV}"
+	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${P}.tar.gz"
+	S="${WORKDIR}/${PN}-${P}"
 	KEYWORDS="~amd64"
 fi
 
@@ -46,7 +45,6 @@ pkg_setup() {
 		KALLSYMS
 		!PAX_KERNEXEC_PLUGIN_METHOD_OR
 		!PAX_SIZE_OVERFLOW
-		!PAX_RANDKSTACK
 		ZLIB_DEFLATE
 		ZLIB_INFLATE
 	"
@@ -57,7 +55,7 @@ pkg_setup() {
 		!DEBUG_INFO_REDUCED
 	"
 
-	kernel_is ge 2 6 26 || die "Linux 2.6.26 or newer required"
+	kernel_is ge 2 6 32 || die "Linux 2.6.26 or newer required"
 
 	[ ${PV} != "9999" ] && \
 		{ kernel_is le 4 0 || die "Linux 4.0 is the latest supported version."; }
@@ -92,7 +90,6 @@ src_configure() {
 		--with-linux="${KV_DIR}"
 		--with-linux-obj="${KV_OUT_DIR}"
 		$(use_enable debug)
-		$(use_enable debug-log)
 	)
 	autotools-utils_src_configure
 }
