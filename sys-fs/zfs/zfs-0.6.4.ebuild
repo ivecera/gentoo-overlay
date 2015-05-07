@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sys-fs/zfs/zfs-0.6.3.ebuild,v 1.4 2015/04/08 18:27:24 mgorny Exp $
+# $Header$
 
 EAPI="5"
 PYTHON_COMPAT=( python{2_7,3_3,3_4} )
@@ -16,9 +16,8 @@ if [ ${PV} == "9999" ] ; then
 	EGIT_REPO_URI="git://github.com/zfsonlinux/${PN}.git"
 else
 	inherit eutils versionator
-	MY_PV=$(replace_version_separator 3 '-')
-	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${PN}-${MY_PV}.tar.gz"
-	S="${WORKDIR}/${PN}-${PN}-${MY_PV}"
+	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${P}.tar.gz"
+	S="${WORKDIR}/${PN}-${P}"
 	KEYWORDS="~amd64"
 fi
 
@@ -112,6 +111,7 @@ src_install() {
 	exeinto /usr/libexec
 	doexe "${T}/zfs-init.sh"
 	systemd_dounit "${T}/zfs.service"
+	doinitd "${FILESDIR}/zed"
 }
 
 pkg_postinst() {
