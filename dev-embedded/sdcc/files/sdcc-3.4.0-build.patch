@@ -1,0 +1,100 @@
+diff -uNrp sdcc-3.4.0.orig/configure sdcc-3.4.0/configure
+--- sdcc-3.4.0.orig/configure	2015-04-15 14:10:14.812458788 +0200
++++ sdcc-3.4.0/configure	2015-04-15 14:22:49.133137432 +0200
+@@ -4670,7 +4670,7 @@ fi
+ done
+ 
+ 
+-for ac_header in endian.h sys/endian.h machine/endian.h sys/isa_defs.h
++for ac_header in endian.h sys/endian.h machine/endian.h sys/isa_defs.h stdalign.h
+ do :
+   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+@@ -4937,6 +4937,17 @@ eval as_val=\$$as_ac_var
+ _ACEOF
+ 
+ fi
++done
++
++for ac_func in strndup
++do :
++  ac_fn_c_check_func "$LINENO" "strndup" "ac_cv_func_strndup"
++if test "x$ac_cv_func_strndup" = x""yes; then :
++  cat >>confdefs.h <<_ACEOF
++#define HAVE_STRNDUP 1
++_ACEOF
++
++fi
+ done
+ 
+ 
+diff -uNrp sdcc-3.4.0.orig/configure.in sdcc-3.4.0/configure.in
+--- sdcc-3.4.0.orig/configure.in	2014-04-02 00:45:56.000000000 +0200
++++ sdcc-3.4.0/configure.in	2015-04-15 14:23:31.405818865 +0200
+@@ -74,7 +74,7 @@ SDCC_REQUIRE_PROG($LEX, flex)
+ 
+ AC_LANG_C
+ 
+-AC_CHECK_HEADERS(endian.h sys/endian.h machine/endian.h sys/isa_defs.h)
++AC_CHECK_HEADERS(endian.h sys/endian.h machine/endian.h sys/isa_defs.h stdalign.h)
+ AC_LANG_PUSH([C++])
+ AC_CHECK_HEADERS(stx/btree_set.h stx/btree_map.h,,AC_MSG_WARN([[STX library missing, using STL instead.]]))
+ AC_CHECK_HEADERS(boost/graph/adjacency_list.hpp,,AC_MSG_ERROR([[boost library not found (boost/graph/adjacency_list.hpp).]]))
+@@ -94,6 +94,7 @@ esac
+ # ===========================================================================
+ AC_CHECK_FUNCS(strerror)
+ AC_CHECK_FUNCS(vsnprintf snprintf vsprintf mkstemp)
++AC_CHECK_FUNCS(strndup)
+ 
+ 
+ # Macro definitions
+diff -uNrp sdcc-3.4.0.orig/sdas/linksrc/lkar.c sdcc-3.4.0/sdas/linksrc/lkar.c
+--- sdcc-3.4.0.orig/sdas/linksrc/lkar.c	2011-12-04 00:42:25.000000000 +0100
++++ sdcc-3.4.0/sdas/linksrc/lkar.c	2015-04-15 14:24:48.046245690 +0200
+@@ -31,6 +31,7 @@ along with this program.  If not, see <h
+ 
+ #include <assert.h>
+ 
++#include "../../sdccconf.h"
+ #include "aslink.h"
+ #include "lklibr.h"
+ #include "lkrel.h"
+@@ -46,6 +47,7 @@ along with this program.  If not, see <h
+ #endif
+ 
+ 
++#ifndef HAVE_STRNDUP
+ char *
+ strndup (const char *str, size_t len)
+ {
+@@ -54,6 +56,7 @@ strndup (const char *str, size_t len)
+   s[len] = '\0';
+   return s;
+ }
++#endif
+ 
+ static int
+ is_ar (FILE * libfp)
+diff -uNrp sdcc-3.4.0.orig/sdccconf_in.h sdcc-3.4.0/sdccconf_in.h
+--- sdcc-3.4.0.orig/sdccconf_in.h	2014-04-02 00:49:18.000000000 +0200
++++ sdcc-3.4.0/sdccconf_in.h	2015-04-15 14:25:27.596951895 +0200
+@@ -49,6 +49,9 @@
+ /* Define to 1 if you have the `snprintf' function. */
+ #undef HAVE_SNPRINTF
+ 
++/* Define to 1 if you have the <stdalign.h> header file. */
++#undef HAVE_STDALIGN_H
++
+ /* Define to 1 if you have the <stdint.h> header file. */
+ #undef HAVE_STDINT_H
+ 
+@@ -64,6 +67,9 @@
+ /* Define to 1 if you have the <string.h> header file. */
+ #undef HAVE_STRING_H
+ 
++/* Define to 1 if you have the `strndup' function. */
++#undef HAVE_STRNDUP
++
+ /* Define to 1 if you have the <stx/btree_map.h> header file. */
+ #undef HAVE_STX_BTREE_MAP_H
+ 
