@@ -89,6 +89,10 @@ src_prepare() {
 	epatch "${FILESDIR}/${PV_MAJOR}-sk_data_ready.patch"
 	epatch "${FILESDIR}/${PV_MAJOR}-readlink_copy.patch"
 	epatch "${FILESDIR}/${PV_MAJOR}-netdev_alloc-3.17.patch"
+	kernel_is ge 4 0 0 && epatch "${FILESDIR}/af_vsock-4.0.4.patch"
+	kernel_is ge 4 0 0 && epatch "${FILESDIR}/vmblock-4.0.4.patch"
+	kernel_is ge 4 0 0 && epatch "${FILESDIR}/vmci-4.0.4.patch"
+	kernel_is ge 4 0 0 && epatch "${FILESDIR}/vmnet-4.0.4.patch"
 
 	# Allow user patches so they can support RC kernels and whatever else
 	epatch_user
