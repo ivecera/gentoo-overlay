@@ -15,6 +15,7 @@ KEYWORDS="amd64 x86"
 IUSE="caps networkmanager pam"
 
 RDEPEND="virtual/krb5
+		>=app-text/gnome-doc-utils-0.3.2
 		>=dev-libs/dbus-glib-0.80
 		>=dev-libs/glib-2.28
 		>=gnome-base/gconf-2.31
