@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header$
+# $Id$
 
 EAPI="4"
 AUTOTOOLS_AUTORECONF="1"
@@ -14,7 +14,7 @@ else
 	inherit eutils versionator
 	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${P}.tar.gz"
 	S="${WORKDIR}/${PN}-${P}"
-	KEYWORDS="~amd64"
+	KEYWORDS="~amd64 ~arm ~ppc ~ppc64"
 fi
 
 DESCRIPTION="The Solaris Porting Layer is a Linux kernel module which provides many of the Solaris kernel APIs"
@@ -55,10 +55,10 @@ pkg_setup() {
 		!DEBUG_INFO_REDUCED
 	"
 
-	kernel_is ge 2 6 32 || die "Linux 2.6.26 or newer required"
+	kernel_is ge 2 6 32 || die "Linux 2.6.32 or newer required"
 
 	[ ${PV} != "9999" ] && \
-		{ kernel_is le 4 1 || die "Linux 4.1 is the latest supported version."; }
+		{ kernel_is le 4 2 || die "Linux 4.2 is the latest supported version."; }
 
 	check_extra_config
 }
