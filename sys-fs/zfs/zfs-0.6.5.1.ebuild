@@ -107,7 +107,7 @@ src_install() {
 	rm -rf "${ED}usr/lib/dracut"
 	use test-suite || rm -rf "${ED}usr/share/zfs"
 
-	use bash-completion && newbashcomp "${FILESDIR}/bash-completion-r1" zfs
+	use bash-completion && newbashcomp "contrib/bash_completion.d/zfs" zfs
 
 	exeinto /usr/libexec
 	doexe "${T}/zfs-init.sh"
