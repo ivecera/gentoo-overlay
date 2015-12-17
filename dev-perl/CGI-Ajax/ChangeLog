@@ -1,9 +1,0 @@
-# ChangeLog for dev-perl/CGI-Session
-# Copyright 1999-2009 Gentoo Foundation; Distributed under the GPL v2
-# $Header:$
-
-*CGI-Ajax-0.707 (18 Mar 2009)
-
-  18 Mar 2009; Zhao Yongming <ming_zym@yahoo.com.cn> +CGI-Ajax-0.707.ebuild:
-  Init.
-
