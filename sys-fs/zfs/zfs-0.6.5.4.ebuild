@@ -3,32 +3,25 @@
 # $Id$
 
 EAPI="5"
-PYTHON_COMPAT=( python{2_7,3_3,3_4} )
-
-inherit python-r1
-
-AT_M4DIR="config"
-AUTOTOOLS_AUTORECONF="1"
-AUTOTOOLS_IN_SOURCE_BUILD="1"
+PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
 
 if [ ${PV} == "9999" ] ; then
-	inherit git-2 linux-mod
+	inherit git-r3 linux-mod
+	AUTOTOOLS_AUTORECONF="1"
 	EGIT_REPO_URI="git://github.com/zfsonlinux/${PN}.git"
 else
-	inherit eutils versionator
-	SRC_URI="https://github.com/zfsonlinux/${PN}/archive/${P}.tar.gz"
-	S="${WORKDIR}/${PN}-${P}"
+	SRC_URI="https://github.com/zfsonlinux/${PN}/releases/download/${P}/${P}.tar.gz"
 	KEYWORDS="~amd64 ~arm ~ppc ~ppc64"
 fi
 
-inherit bash-completion-r1 flag-o-matic toolchain-funcs autotools-utils udev systemd
+inherit autotools-utils bash-completion-r1 flag-o-matic linux-info python-r1 systemd toolchain-funcs udev
 
 DESCRIPTION="Userland utilities for ZFS Linux kernel module"
 HOMEPAGE="http://zfsonlinux.org/"
 
-LICENSE="BSD-2 CDDL bash-completion? ( MIT )"
+LICENSE="BSD-2 CDDL MIT"
 SLOT="0"
-IUSE="bash-completion custom-cflags debug kernel-builtin +rootfs test-suite static-libs"
+IUSE="custom-cflags debug kernel-builtin +rootfs test-suite static-libs"
 RESTRICT="test"
 
 COMMON_DEPEND="
@@ -62,8 +55,30 @@ RDEPEND="${COMMON_DEPEND}
 	!>=sys-fs/udev-init-scripts-28
 "
 
+AT_M4DIR="config"
+AUTOTOOLS_IN_SOURCE_BUILD="1"
+
 pkg_setup() {
-	:
+	if use kernel_linux && use test-suite; then
+		linux-info_pkg_setup
+		if  ! linux_config_exists; then
+			ewarn "Cannot check the linux kernel configuration."
+		else
+			# recheck that we don't have usblp to collide with libusb
+			if use test-suite; then
+				if linux_chkconfig_present BLK_DEV_LOOP; then
+					eerror "The ZFS test suite requires loop device support enabled."
+					eerror "Please enable it:"
+					eerror "    CONFIG_BLK_DEV_LOOP=y"
+					eerror "in /usr/src/linux/.config or"
+					eerror "    Device Drivers --->"
+					eerror "        Block devices --->"
+					eerror "            [ ] Loopback device support"
+				fi
+			fi
+		fi
+	fi
+
 }
 
 src_prepare() {
@@ -82,6 +97,7 @@ src_configure() {
 		--bindir="${EPREFIX}/bin"
 		--sbindir="${EPREFIX}/sbin"
 		--with-config=user
+		--with-dracutdir="/usr/$(get_libdir)/dracut"
 		--with-linux="${KV_DIR}"
 		--with-linux-obj="${KV_OUT_DIR}"
 		--with-udevdir="$(get_udevdir)"
@@ -104,19 +120,17 @@ src_configure() {
 src_install() {
 	autotools-utils_src_install
 	gen_usr_ldscript -a uutil nvpair zpool zfs zfs_core
-	rm -rf "${ED}usr/lib/dracut"
 	use test-suite || rm -rf "${ED}usr/share/zfs"
 
-	use bash-completion && newbashcomp "contrib/bash_completion.d/zfs" zfs
+	newbashcomp "${FILESDIR}/bash-completion-r1" zfs
+	bashcomp_alias zfs zpool
 
 	exeinto /usr/libexec
 	doexe "${T}/zfs-init.sh"
 	systemd_dounit "${T}/zfs.service"
-	doinitd "${FILESDIR}/zed"
 }
 
 pkg_postinst() {
-
 	if ! use kernel-builtin && [ ${PV} = "9999" ]
 	then
 		einfo "Adding ${P} to the module database to ensure that the"
@@ -127,8 +141,7 @@ pkg_postinst() {
 	if [ -e "${EROOT}etc/runlevels/boot/zfs" ]
 	then
 		einfo 'The zfs boot script has been split into the zfs-import,'
-		einfo 'zfs-mount and zfs-share scripts, with zed being added in the'
-		einfo 'form of a fourth script.'
+		einfo 'zfs-mount and zfs-share scripts.'
 		einfo
 		einfo 'You had the zfs script in your boot runlevel. For your'
 		einfo 'convenience, it has been automatically removed and the three'
@@ -152,8 +165,22 @@ pkg_postinst() {
 			einfo "You should add zfs-share to the default runlevel."
 	fi
 
-	[ -e "${EROOT}etc/runlevels/default/zfs-zed" ] || \
-		einfo "You should add zfs-zed to the default runlevel."
+	if [ -e "${EROOT}etc/runlevels/default/zed" ]
+	then
+		einfo 'The downstream OpenRC zed script has replaced by the upstream'
+		einfo 'OpenRC zfs-zed script.'
+		einfo
+		einfo 'You had the zed script in your default runlevel. For your'
+		einfo 'convenience, it has been automatically removed and the zfs-zed'
+		einfo 'script that replaced it has been configured to start.'
+
+		rm "${EROOT}etc/runlevels/boot/zed"
+		ln -snf "${EROOT}etc/init.d/zfs-sed" \
+			"${EROOT}etc/runlevels/default/zfs-zed"
+	else
+		[ -e "${EROOT}etc/runlevels/default/zfs-zed" ] || \
+			einfo "You should add zfs-zed to the default runlevel."
+	fi
 
 	if [ -e "${EROOT}etc/runlevels/shutdown/zfs-shutdown" ]
 	then
