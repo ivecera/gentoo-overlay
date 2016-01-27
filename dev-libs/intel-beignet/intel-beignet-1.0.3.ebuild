@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -38,6 +38,7 @@ RDEPEND="app-eselect/eselect-opencl
 pkg_setup() {
 	python_setup
 }
+IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
 
 src_prepare() {
 	# disable tests for now
@@ -45,18 +46,19 @@ src_prepare() {
 		CMakeLists.txt || die "sed failed"
 
 	# disable debian multiarch
-	epatch "${FILESDIR}"/no-debian-multiarch-1.0.3.patch
-	epatch "${FILESDIR}/respect-flags-1.0.3.patch"
+	#epatch "${FILESDIR}/no-debian-multiarch-${PV}.patch"
 
-	local IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
+	# respect compile flags
+	epatch "${FILESDIR}/respect-flags-${PV}.patch"
+
+	epatch "${FILESDIR}/tr.patch"
+
 	echo "${IBEIGNET_DIR}/lib/beignet/libcl.so" > intelbeignet.icd
 	cmake-utils_src_prepare
 }
 
 multilib_src_configure() {
-	local mycmakeargs=(
-		-DLIB_INSTALL_DIR="/usr/$(get_libdir)/OpenCL/vendors"
-	)
+	local mycmakeargs=( -DCMAKE_INSTALL_PREFIX="${IBEIGNET_DIR}/" )
 
 	multilib_is_native_abi || mycmakeargs+=(
 		-DLLVM_CONFIG_EXECUTABLE="${EPREFIX}/usr/bin/llvm-config.${ABI}"
@@ -70,22 +72,16 @@ multilib_src_configure() {
 multilib_src_install() {
 	cmake-utils_src_install
 
+	cd ${S}
 	#insinto /etc/OpenCL/vendors/
 	#doins intelbeignet.icd
-	cd ${D}
-	insinto /usr/$(get_libdir)/OpenCL/vendors/${PN}/include/CL
-	doins usr/include/CL/*
-	rm -rf usr/include
 
 	multilib_is_native_abi && {
-		cd ${S}
 		dodoc -r docs
 	}
 
-	dosym libcl.so \
-		/usr/$(get_libdir)/OpenCL/vendors/${PN}/libOpenCL.so.1
-	dosym libcl.so \
-		/usr/$(get_libdir)/OpenCL/vendors/${PN}/libOpenCL.so
-	dosym libcl.so \
-		/usr/$(get_libdir)/OpenCL/vendors/${PN}/libcl.so.1
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so.1
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so.1
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so
 }
