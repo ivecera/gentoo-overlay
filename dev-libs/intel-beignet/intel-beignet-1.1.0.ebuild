@@ -38,7 +38,6 @@ RDEPEND="app-eselect/eselect-opencl
 pkg_setup() {
 	python_setup
 }
-IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
 
 src_prepare() {
 	# disable tests for now
@@ -53,11 +52,13 @@ src_prepare() {
 
 	epatch "${FILESDIR}/tr.patch"
 
+	local IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
 	echo "${IBEIGNET_DIR}/lib/beignet/libcl.so" > intelbeignet.icd
 	cmake-utils_src_prepare
 }
 
 multilib_src_configure() {
+	local IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
 	local mycmakeargs=( -DCMAKE_INSTALL_PREFIX="${IBEIGNET_DIR}/" )
 
 	multilib_is_native_abi || mycmakeargs+=(
@@ -80,8 +81,9 @@ multilib_src_install() {
 		dodoc -r docs
 	}
 
-	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so.1
-	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so
-	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so.1
-	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so
+	local IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
+	dosym $(get_libdir)/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so.1
+	dosym $(get_libdir)/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so
+	dosym $(get_libdir)/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so.1
+	dosym $(get_libdir)/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so
 }
