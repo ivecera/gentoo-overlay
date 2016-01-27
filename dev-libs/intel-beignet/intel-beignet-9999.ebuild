@@ -1,63 +1,69 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI=5
-CMAKE_BUILD_TYPE="Release"
-PYTHON_COMPAT=( python{2_6,2_7} )
 
-inherit versionator python-single-r1 cmake-utils git-r3 multilib-minimal
+PYTHON_COMPAT=( python2_7 )
+
+inherit python-any-r1 cmake-utils multilib-minimal
+CMAKE_BUILD_TYPE="Release"
 
 DESCRIPTION="The Beignet GPGPU System for Intel Ivybridge GPUs"
 HOMEPAGE="http://wiki.freedesktop.org/www/Software/Beignet/"
 
-# we cannot use the snapshots as the checksum changes for every download
-EGIT_REPO_URI="git://anongit.freedesktop.org/beignet"
-
-LICENSE="LGPL-2"
+LICENSE="GPL-2"
 SLOT="0"
 
 if [[ "${PV}" == "9999" ]]; then
+	inherit git-r3
+	EGIT_REPO_URI="git://anongit.freedesktop.org/beignet"
 	KEYWORDS=""
 else
 	KEYWORDS="~amd64 ~x86"
-	EGIT_COMMIT="Release_v${PV}"
+	SRC_URI="https://01.org/sites/default/files/${P/intel-/}-source.tar.gz -> ${P}.tar.gz"
+	S=${WORKDIR}/Beignet-${PV}-Source
 fi
 
-RDEPENDS="
-	app-admin/eselect-opencl
+DEPEND=">=sys-devel/gcc-4.6
+	${PYTHON_DEPS}"
+RDEPEND="app-eselect/eselect-opencl
 	media-libs/mesa[${MULTILIB_USEDEP}]
-	>=sys-devel/clang-3.1[${MULTILIB_USEDEP}]
-	>=sys-devel/llvm-3.1[${MULTILIB_USEDEP}]
+	sys-devel/clang[${MULTILIB_USEDEP}]
+	>=sys-devel/llvm-3.5[${MULTILIB_USEDEP}]
 	x11-libs/libdrm[video_cards_intel,${MULTILIB_USEDEP}]
 	x11-libs/libXext[${MULTILIB_USEDEP}]
-	x11-libs/libXfixes[${MULTILIB_USEDEP}]
-	"
-DEPENDS="${RDEPEND} ${PYTHON_DEPS}"
+	x11-libs/libXfixes[${MULTILIB_USEDEP}]"
+
+pkg_setup() {
+	python_setup
+}
+IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
 
 src_prepare() {
-	cmake-utils_src_prepare
+	# disable tests for now
+	sed -i "s/ADD_SUBDIRECTORY(utests)/#ADD_SUBDIRECTORY(utests)/" \
+		CMakeLists.txt || die "sed failed"
 
-	if [[ $(get_major_version) -lt 1 ]]; then
-		epatch "${FILESDIR}/${PN}-respect-flags.patch"
-		epatch "${FILESDIR}/${PN}-opencl.patch"
-	elif [[ ${PV} = "1.0.0" ]]; then
-		epatch "${FILESDIR}/${PN}-respect-flags-v2.patch"
-		epatch "${FILESDIR}/${PN}-opencl-v2.patch"
-	else
-		epatch "${FILESDIR}/${PN}-respect-flags-v3.patch"
-		epatch "${FILESDIR}/${PN}-opencl-v3.patch"
-	fi
-	epatch "${FILESDIR}/${PN}-tr.patch"
+	# disable debian multiarch
+	#epatch "${FILESDIR}/no-debian-multiarch-${PV}.patch"
+
+	# respect compile flags
+	epatch "${FILESDIR}/respect-flags-${PV}.patch"
+
+	epatch "${FILESDIR}/tr.patch"
+
+	echo "${IBEIGNET_DIR}/lib/beignet/libcl.so" > intelbeignet.icd
+	cmake-utils_src_prepare
 }
 
 multilib_src_configure() {
-	local mycmakeargs=(
-		-DLIB_INSTALL_DIR="/usr/$(get_libdir)/OpenCL/vendors"
-	)
+	local mycmakeargs=( -DCMAKE_INSTALL_PREFIX="${IBEIGNET_DIR}/" )
 
 	multilib_is_native_abi || mycmakeargs+=(
 		-DLLVM_CONFIG_EXECUTABLE="${EPREFIX}/usr/bin/llvm-config.${ABI}"
+		-DCMAKE_C_FLAGS="$(get_abi_var CFLAGS)"
+		-DCMAKE_CXX_FLAGS="$(get_abi_var CXXFLAGS)"
 	)
 
 	cmake-utils_src_configure
@@ -66,15 +72,16 @@ multilib_src_configure() {
 multilib_src_install() {
 	cmake-utils_src_install
 
-	cd ${D}
-	insinto /usr/$(get_libdir)/OpenCL/vendors/${PN}/include/CL
-	doins usr/include/CL/*
-	rm -rf usr/include
+	cd ${S}
+	#insinto /etc/OpenCL/vendors/
+	#doins intelbeignet.icd
 
 	multilib_is_native_abi && {
-		cd ${S}
 		dodoc -r docs
 	}
-#	insinto /etc/OpenCL/vendors/
-#	doins intelbeignet.icd
+
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so.1
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libOpenCL.so
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so.1
+	dosym lib/beignet/libcl.so "${IBEIGNET_DIR}"/libcl.so
 }

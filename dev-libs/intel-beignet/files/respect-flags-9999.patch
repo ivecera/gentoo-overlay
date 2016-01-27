@@ -1,7 +1,8 @@
-diff -uNrp beignet-1.0.1.orig/CMakeLists.txt beignet-1.0.1/CMakeLists.txt
---- beignet-1.0.1.orig/CMakeLists.txt	2015-02-25 17:32:42.501425003 +0100
-+++ beignet-1.0.1/CMakeLists.txt	2015-02-25 17:38:19.758524381 +0100
-@@ -66,8 +66,8 @@ elseif (COMPILER STREQUAL "CLANG")
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 97725ca..6edf1b7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -86,8 +86,8 @@ elseif (COMPILER STREQUAL "CLANG")
  elseif (COMPILER STREQUAL "ICC")
    set (CMAKE_C_CXX_FLAGS "${CMAKE_C_CXX_FLAGS}  -wd2928 -Wall -fPIC -fstrict-aliasing -fp-model fast -msse4.1 -Wl,-E")
  endif ()
@@ -12,12 +13,3 @@ diff -uNrp beignet-1.0.1.orig/CMakeLists.txt beignet-1.0.1/CMakeLists.txt
  set (CMAKE_CXX_FLAGS_DEBUG          "-O0 -g -DGBE_DEBUG=1")
  set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DGBE_DEBUG=1")
  set (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DGBE_DEBUG=0")
-@@ -88,7 +88,7 @@ ELSE (USE_STANDALONE_GBE_COMPILER STREQU
- ENDIF (USE_STANDALONE_GBE_COMPILER STREQUAL "true")
- 
- 
--set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${LLVM_LDFLAGS}")
-+set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined ${LLVM_LDFLAGS}")
- 
- # XLib
- Find_Package(X11)
