@@ -1,0 +1,255 @@
+From d5c82e55c75694b0a5d1cd8ba9503e88c3c03550 Mon Sep 17 00:00:00 2001
+From: Chunwei Chen <david.chen@osnexus.com>
+Date: Thu, 21 Apr 2016 17:19:07 -0700
+Subject: [PATCH 2/2] Linux 4.5 compat: Use xattr_handler->name for acl
+
+Linux 4.5 added member "name" to xattr_handler. xattr_handler which matches to
+whole name rather than prefix should use "name" instead of "prefix".
+Otherwise, kernel will return with EINVAL when it tries to resolve handlers.
+
+Also, we remove the strcmp checks when xattr_handler has name, because
+xattr_resolve_name will do the check for us.
+
+Signed-off-by: Chunwei Chen <david.chen@osnexus.com>
+Signed-off-by: Brian Behlendorf <behlendorf1@llnl.gov>
+Closes #4549
+Closes #4537
+
+(cherry picked from commit 232604b58e8579501c5a260ad3a7b71a239dd546)
+---
+ config/kernel-xattr-handler.m4 | 25 +++++++++++++++++
+ config/kernel.m4               |  1 +
+ module/zfs/zpl_xattr.c         | 64 +++++++++++++++++++++++++++++-------------
+ 3 files changed, 70 insertions(+), 20 deletions(-)
+
+diff --git a/config/kernel-xattr-handler.m4 b/config/kernel-xattr-handler.m4
+index e1881f6..f614287 100644
+--- a/config/kernel-xattr-handler.m4
++++ b/config/kernel-xattr-handler.m4
+@@ -33,6 +33,31 @@ AC_DEFUN([ZFS_AC_KERNEL_CONST_XATTR_HANDLER], [
+ ])
+ 
+ dnl #
++dnl # 4.5 API change,
++dnl # struct xattr_handler added new member "name".
++dnl # xattr_handler which matches to whole name rather than prefix should use
++dnl # "name" instead of "prefix", e.g. "system.posix_acl_access"
++dnl #
++AC_DEFUN([ZFS_AC_KERNEL_XATTR_HANDLER_NAME], [
++	AC_MSG_CHECKING([whether xattr_handler has name])
++	ZFS_LINUX_TRY_COMPILE([
++		#include <linux/xattr.h>
++
++		static const struct xattr_handler
++		    xops __attribute__ ((unused)) = {
++			.name = XATTR_NAME_POSIX_ACL_ACCESS,
++		};
++	],[
++	],[
++		AC_MSG_RESULT(yes)
++		AC_DEFINE(HAVE_XATTR_HANDLER_NAME, 1,
++		    [xattr_handler has name])
++	],[
++		AC_MSG_RESULT(no)
++	])
++])
++
++dnl #
+ dnl # Supported xattr handler get() interfaces checked newest to oldest.
+ dnl #
+ AC_DEFUN([ZFS_AC_KERNEL_XATTR_HANDLER_GET], [
+diff --git a/config/kernel.m4 b/config/kernel.m4
+index bac7d4d..a9f1b6a 100644
+--- a/config/kernel.m4
++++ b/config/kernel.m4
+@@ -32,6 +32,7 @@ AC_DEFUN([ZFS_AC_CONFIG_KERNEL], [
+ 	ZFS_AC_KERNEL_GET_GENDISK
+ 	ZFS_AC_KERNEL_DISCARD_GRANULARITY
+ 	ZFS_AC_KERNEL_CONST_XATTR_HANDLER
++	ZFS_AC_KERNEL_XATTR_HANDLER_NAME
+ 	ZFS_AC_KERNEL_XATTR_HANDLER_GET
+ 	ZFS_AC_KERNEL_XATTR_HANDLER_SET
+ 	ZFS_AC_KERNEL_XATTR_HANDLER_LIST
+diff --git a/module/zfs/zpl_xattr.c b/module/zfs/zpl_xattr.c
+index 4200919..1a15d4d 100644
+--- a/module/zfs/zpl_xattr.c
++++ b/module/zfs/zpl_xattr.c
+@@ -688,10 +688,11 @@ __zpl_xattr_user_get(struct inode *ip, const char *name,
+ {
+ 	char *xattr_name;
+ 	int error;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") == 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	if (!(ITOZSB(ip)->z_flags & ZSB_XATTR))
+ 		return (-EOPNOTSUPP);
+ 
+@@ -709,10 +710,11 @@ __zpl_xattr_user_set(struct inode *ip, const char *name,
+ {
+ 	char *xattr_name;
+ 	int error;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") == 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	if (!(ITOZSB(ip)->z_flags & ZSB_XATTR))
+ 		return (-EOPNOTSUPP);
+ 
+@@ -758,10 +760,11 @@ __zpl_xattr_trusted_get(struct inode *ip, const char *name,
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return (-EACCES);
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") == 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	xattr_name = kmem_asprintf("%s%s", XATTR_TRUSTED_PREFIX, name);
+ 	error = zpl_xattr_get(ip, xattr_name, value, size);
+ 	strfree(xattr_name);
+@@ -779,10 +782,11 @@ __zpl_xattr_trusted_set(struct inode *ip, const char *name,
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return (-EACCES);
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") == 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	xattr_name = kmem_asprintf("%s%s", XATTR_TRUSTED_PREFIX, name);
+ 	error = zpl_xattr_set(ip, xattr_name, value, size, flags);
+ 	strfree(xattr_name);
+@@ -825,10 +829,11 @@ __zpl_xattr_security_get(struct inode *ip, const char *name,
+ {
+ 	char *xattr_name;
+ 	int error;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") == 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	xattr_name = kmem_asprintf("%s%s", XATTR_SECURITY_PREFIX, name);
+ 	error = zpl_xattr_get(ip, xattr_name, value, size);
+ 	strfree(xattr_name);
+@@ -843,10 +848,11 @@ __zpl_xattr_security_set(struct inode *ip, const char *name,
+ {
+ 	char *xattr_name;
+ 	int error;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") == 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	xattr_name = kmem_asprintf("%s%s", XATTR_SECURITY_PREFIX, name);
+ 	error = zpl_xattr_set(ip, xattr_name, value, size, flags);
+ 	strfree(xattr_name);
+@@ -1212,10 +1218,11 @@ __zpl_xattr_acl_get_access(struct inode *ip, const char *name,
+ 	struct posix_acl *acl;
+ 	int type = ACL_TYPE_ACCESS;
+ 	int error;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") != 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	if (ITOZSB(ip)->z_acl_type != ZFS_ACLTYPE_POSIXACL)
+ 		return (-EOPNOTSUPP);
+ 
+@@ -1239,10 +1246,11 @@ __zpl_xattr_acl_get_default(struct inode *ip, const char *name,
+ 	struct posix_acl *acl;
+ 	int type = ACL_TYPE_DEFAULT;
+ 	int error;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") != 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	if (ITOZSB(ip)->z_acl_type != ZFS_ACLTYPE_POSIXACL)
+ 		return (-EOPNOTSUPP);
+ 
+@@ -1266,10 +1274,11 @@ __zpl_xattr_acl_set_access(struct inode *ip, const char *name,
+ 	struct posix_acl *acl;
+ 	int type = ACL_TYPE_ACCESS;
+ 	int error = 0;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") != 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	if (ITOZSB(ip)->z_acl_type != ZFS_ACLTYPE_POSIXACL)
+ 		return (-EOPNOTSUPP);
+ 
+@@ -1305,10 +1314,11 @@ __zpl_xattr_acl_set_default(struct inode *ip, const char *name,
+ 	struct posix_acl *acl;
+ 	int type = ACL_TYPE_DEFAULT;
+ 	int error = 0;
+-
++	/* xattr_resolve_name will do this for us if this is defined */
++#ifndef HAVE_XATTR_HANDLER_NAME
+ 	if (strcmp(name, "") != 0)
+ 		return (-EINVAL);
+-
++#endif
+ 	if (ITOZSB(ip)->z_acl_type != ZFS_ACLTYPE_POSIXACL)
+ 		return (-EOPNOTSUPP);
+ 
+@@ -1339,10 +1349,17 @@ ZPL_XATTR_SET_WRAPPER(zpl_xattr_acl_set_default);
+ 
+ /*
+  * ACL access xattr namespace handlers.
++ *
++ * Use .name instead of .prefix when available. xattr_resolve_name will match
++ * whole name and reject anything that has .name only as prefix.
+  */
+ xattr_handler_t zpl_xattr_acl_access_handler =
+ {
++#ifdef HAVE_XATTR_HANDLER_NAME
++	.name	= XATTR_NAME_POSIX_ACL_ACCESS,
++#else
+ 	.prefix	= XATTR_NAME_POSIX_ACL_ACCESS,
++#endif
+ 	.list	= zpl_xattr_acl_list_access,
+ 	.get	= zpl_xattr_acl_get_access,
+ 	.set	= zpl_xattr_acl_set_access,
+@@ -1355,10 +1372,17 @@ xattr_handler_t zpl_xattr_acl_access_handler =
+ 
+ /*
+  * ACL default xattr namespace handlers.
++ *
++ * Use .name instead of .prefix when available. xattr_resolve_name will match
++ * whole name and reject anything that has .name only as prefix.
+  */
+ xattr_handler_t zpl_xattr_acl_default_handler =
+ {
++#ifdef HAVE_XATTR_HANDLER_NAME
++	.name	= XATTR_NAME_POSIX_ACL_DEFAULT,
++#else
+ 	.prefix	= XATTR_NAME_POSIX_ACL_DEFAULT,
++#endif
+ 	.list	= zpl_xattr_acl_list_default,
+ 	.get	= zpl_xattr_acl_get_default,
+ 	.set	= zpl_xattr_acl_set_default,
+-- 
+2.7.3
+
