@@ -9,7 +9,7 @@ inherit autotools
 DESCRIPTION="Library for manipulating and mounting Windows Imaging Format files"
 HOMEPAGE="http://wimlib.sourceforge.net/"
 SRC_URI="http://wimlib.net/downloads/${P}.tar.gz
-	https://wimlib.net/git/?p=wimlib;a=blob_plain;f=build-aux/nasm_lt.sh;h=6cd73294c0617c5d186926f1a7903afbde11044c"
+	https://wimlib.net/git/?p=wimlib;a=blob_plain;f=build-aux/nasm_lt.sh;h=6cd73294c0617c5d186926f1a7903afbde11044c -> ${P}-nasm_lt.sh"
 
 LICENSE="GPL-3"
 RESTRICT="mirror"
