@@ -8,7 +8,8 @@ inherit autotools
 
 DESCRIPTION="Library for manipulating and mounting Windows Imaging Format files"
 HOMEPAGE="http://wimlib.sourceforge.net/"
-SRC_URI="http://wimlib.net/downloads/${P}.tar.gz"
+SRC_URI="http://wimlib.net/downloads/${P}.tar.gz
+	https://wimlib.net/git/?p=wimlib;a=blob_plain;f=build-aux/nasm_lt.sh;h=6cd73294c0617c5d186926f1a7903afbde11044c"
 
 LICENSE="GPL-3"
 RESTRICT="mirror"
@@ -29,6 +30,8 @@ DEPEND="${RDEPEND}
 	ssse3? ( dev-lang/nasm )"
 
 src_prepare() {
+	cp ${DISTDIR}/${P}-nasm_lt.sh ${S}/build-aux/nasm_lt.sh
+	chmod +x ${S}/build-aux/nasm_lt.sh
 	eautoreconf
 	echo "section .note.GNU-stack progbits" >> src/sha1-ssse3.asm
 }
