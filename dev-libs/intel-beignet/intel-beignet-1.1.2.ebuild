@@ -40,17 +40,13 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# disable tests for now
-	sed -i "s/ADD_SUBDIRECTORY(utests)/#ADD_SUBDIRECTORY(utests)/" \
-		CMakeLists.txt || die "sed failed"
-
-	# disable debian multiarch
-	#epatch "${FILESDIR}/no-debian-multiarch-${PV}.patch"
-
 	# respect compile flags
-	epatch "${FILESDIR}/respect-flags-${PV}.patch"
+	epatch "${FILESDIR}/respect-flags.patch"
 
 	epatch "${FILESDIR}/tr.patch"
+
+	epatch "${FILESDIR}/llvm37.patch"
+	epatch "${FILESDIR}/findllvm.patch"
 
 	local IBEIGNET_DIR=/usr/$(get_libdir)/OpenCL/vendors/intel-beignet
 	echo "${IBEIGNET_DIR}/lib/beignet/libcl.so" > intelbeignet.icd
