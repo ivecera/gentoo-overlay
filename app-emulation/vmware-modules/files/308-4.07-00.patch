@@ -1,0 +1,13 @@
+diff --git a/vmnet-only/netif.c b/vmnet-only/netif.c
+index cd93edb..5ac4e69 100644
+--- a/vmnet-only/netif.c
++++ b/vmnet-only/netif.c
+@@ -465,7 +465,7 @@ VNetNetifStartXmit(struct sk_buff    *skb, // IN:
+    VNetSend(&netIf->port.jack, skb);
+ 
+    netIf->stats.tx_packets++;
+-   dev->trans_start = jiffies;
++   netif_trans_update(dev);
+ 
+    return 0;
+ }
