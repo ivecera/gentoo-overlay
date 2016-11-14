@@ -1,0 +1,42 @@
+From 566d44905af95a11971ad91925c9b89d6d8fc7eb Mon Sep 17 00:00:00 2001
+From: Ivan Vecera <ivecera@redhat.com>
+Date: Thu, 1 Jun 2017 15:00:43 +0200
+Subject: [PATCH] 01
+
+---
+ vmblock-only/linux/inode.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/vmblock-only/linux/inode.c b/vmblock-only/linux/inode.c
+index a547f4e..65c1454 100644
+--- a/vmblock-only/linux/inode.c
++++ b/vmblock-only/linux/inode.c
+@@ -66,7 +66,9 @@ static struct inode_operations LinkInodeOps = {
+ #else
+ struct inode_operations LinkInodeOps = {
+ #endif
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
+    .readlink    = InodeOpReadlink,
++#endif
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 99)
+    .get_link = InodeOpFollowlink,
+ #else
+@@ -188,6 +190,7 @@ InodeOpLookup(struct inode *dir,      // IN: parent directory's inode
+  *----------------------------------------------------------------------------
+  */
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
+ static int
+ InodeOpReadlink(struct dentry *dentry,  // IN : dentry of symlink
+                 char __user *buffer,    // OUT: output buffer (user space)
+@@ -214,6 +217,7 @@ InodeOpReadlink(struct dentry *dentry,  // IN : dentry of symlink
+ #endif
+ 
+ }
++#endif
+ 
+ 
+ /*
+-- 
+2.13.0
+
