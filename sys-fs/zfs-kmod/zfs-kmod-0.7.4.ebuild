@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 
@@ -11,7 +10,7 @@ if [ ${PV} == "9999" ]; then
 else
 	SRC_URI="https://github.com/zfsonlinux/zfs/releases/download/zfs-${PV}/zfs-${PV}.tar.gz"
 	S="${WORKDIR}/zfs-${PV}"
-	KEYWORDS="~amd64 ~arm64 ~ppc64"
+	KEYWORDS=" ~amd64"
 fi
 
 inherit flag-o-matic linux-info linux-mod toolchain-funcs autotools-utils
@@ -65,7 +64,7 @@ pkg_setup() {
 	kernel_is ge 2 6 32 || die "Linux 2.6.32 or newer required"
 
 	[ ${PV} != "9999" ] && \
-		{ kernel_is le 4 12 || die "Linux 4.12 is the latest supported version."; }
+		{ kernel_is le 4 14 || die "Linux 4.14 is the latest supported version."; }
 
 	check_extra_config
 }
