@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5"
-PYTHON_COMPAT=( python{2_7,3_4,3_5} )
+PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} )
 
 if [ ${PV} == "9999" ] ; then
 	inherit git-r3 linux-mod
@@ -21,7 +21,7 @@ HOMEPAGE="http://zfsonlinux.org/"
 LICENSE="BSD-2 CDDL MIT"
 SLOT="0"
 IUSE="custom-cflags debug kernel-builtin +rootfs test-suite static-libs"
-RESTRICT="test mirror"
+RESTRICT="test"
 
 COMMON_DEPEND="
 	net-libs/libtirpc
@@ -82,7 +82,6 @@ pkg_setup() {
 			fi
 		fi
 	fi
-
 }
 
 src_prepare() {
@@ -101,11 +100,12 @@ src_configure() {
 		--bindir="${EPREFIX}/bin"
 		--sbindir="${EPREFIX}/sbin"
 		--with-config=user
-		--with-dracutdir="/usr/lib/dracut"
+		--with-dracutdir="${EPREFIX}/usr/lib/dracut"
 		--with-linux="${KV_DIR}"
 		--with-linux-obj="${KV_OUT_DIR}"
 		--with-udevdir="$(get_udevdir)"
-		--with-blkid
+		--with-systemdunitdir="$(systemd_get_systemunitdir)"
+		--with-systemdpresetdir="${EPREFIX}/lib/systemd/system-preset"
 		$(use_enable debug)
 	)
 	autotools-utils_src_configure
@@ -192,6 +192,14 @@ pkg_postinst() {
 		rm "${EROOT}etc/runlevels/shutdown/zfs-shutdown"
 	fi
 
+	systemd_reenable zfs-zed.service
+	systemd_reenable zfs-import-cache.service
+	systemd_reenable zfs-import-scan.service
+	systemd_reenable zfs-mount.service
+	systemd_reenable zfs-share.service
+	systemd_reenable zfs-import.target
+	systemd_reenable zfs.target
+	systemd_reenable zfs.service
 }
 
 pkg_postrm() {

@@ -21,7 +21,7 @@ HOMEPAGE="http://zfsonlinux.org/"
 LICENSE="CDDL debug? ( GPL-2+ )"
 SLOT="0"
 IUSE="custom-cflags debug +rootfs"
-RESTRICT="debug? ( strip ) test mirror"
+RESTRICT="debug? ( strip ) test"
 
 DEPEND="
 	=sys-kernel/spl-${PV}*
@@ -42,7 +42,6 @@ pkg_setup() {
 	linux-info_pkg_setup
 	CONFIG_CHECK="
 		!DEBUG_LOCK_ALLOC
-		!CONFIG_REISER4_FS
 		EFI_PARTITION
 		IOSCHED_NOOP
 		MODULES
@@ -66,7 +65,7 @@ pkg_setup() {
 	kernel_is ge 2 6 32 || die "Linux 2.6.32 or newer required"
 
 	[ ${PV} != "9999" ] && \
-		{ kernel_is le 4 15 || die "Linux 4.15 is the latest supported version."; }
+		{ kernel_is le 4 19 || die "Linux 4.19 is the latest supported version."; }
 
 	check_extra_config
 }
