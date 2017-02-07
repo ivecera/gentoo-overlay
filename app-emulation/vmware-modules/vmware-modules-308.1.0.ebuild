@@ -107,6 +107,7 @@ src_prepare() {
 	kernel_is ge 4 8 0 && epatch "${FILESDIR}/${PV_MAJOR}-4.08-00.patch"
 	kernel_is ge 4 8 0 && epatch "${FILESDIR}/${PV_MAJOR}-4.08-01.patch"
 	kernel_is ge 4 8 0 && epatch "${FILESDIR}/${PV_MAJOR}-4.08-02.patch"
+	kernel_is ge 4 9 0 && epatch "${FILESDIR}/${PV_MAJOR}-4.09-01.patch"
 
 	# Allow user patches so they can support RC kernels and whatever else
 	epatch_user
