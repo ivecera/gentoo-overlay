@@ -1,13 +1,12 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=4
+EAPI=5
 
-PYTHON_DEPEND="2"
-RESTRICT_PYTHON_ABIS="3.* 2.7-pypy-* 2.5-jython"
-SUPPORT_PYTHON_ABIS="1"
+PYTHON_COMPAT=( python{2_7,3_4,3_5} )
+DISTUTILS_SINGLE_IMPL="1"
 
-inherit eutils distutils python
+inherit eutils distutils-r1
 
 DESCRIPTION="A Python framework for building CLI interfaces and shells"
 HOMEPAGE="https://github.com/Datera/configshell"
