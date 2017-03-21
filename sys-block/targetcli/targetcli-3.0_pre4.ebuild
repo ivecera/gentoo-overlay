@@ -1,13 +1,12 @@
 # Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=4
+EAPI=5
 
-PYTHON_DEPEND="2"
-RESTRICT_PYTHON_ABIS="3.* 2.7-pypy-* 2.5-jython"
-SUPPORT_PYTHON_ABIS="1"
+PYTHON_COMPAT=( python{2_7,3_4,3_5} )
+DISTUTILS_SINGLE_IMPL="1"
 
-inherit eutils distutils python linux-info
+inherit eutils distutils-r1 linux-info
 
 MY_PV="${PV/_/-}"
 DESCRIPTION="The targetcli administration shell"
@@ -34,17 +33,17 @@ CONFIG_CHECK="~TARGET_CORE"
 
 pkg_setup() {
 	linux-info_pkg_setup
-	python_pkg_setup
+	python-single-r1_pkg_setup
 }
 
 src_prepare() {
 	sed -e "s,GIT_VERSION,${PV},g" -i ${PN}/__init__.py || die
 
-	distutils_src_prepare || die
+	distutils-r1_src_prepare || die
 }
 
 src_install() {
-	distutils_src_install || die
+	distutils-r1_src_install || die
 
 	dodoc COPYING
 	doman doc/${PN}.8
