@@ -1,0 +1,75 @@
+From fb963d33ee0dd350143ba1c9cd35d5f7d86910d2 Mon Sep 17 00:00:00 2001
+From: Brian Behlendorf <behlendorf1@llnl.gov>
+Date: Mon, 6 Mar 2017 09:17:24 -0800
+Subject: [PATCH] Fix powerpc build
+
+Unlike other architectures which sanitize the LDFLAGS from the
+environment in arch/<arch>/Makefile.  The powerpc Makefile
+allows LDFLAGS to be passed through resulting in the following
+build failure.
+
+  /usr/bin/ld: unrecognized option '-Wl,-z,relro'
+
+LDFLAGS is set in /usr/lib/rpm/redhat/macros by default.  Clear
+the environment variable when building kmods for powerpc.
+
+Additionally, now that ppc64le exists it's not longer safe to
+assume a powerpc system is big endian.  Rely on the endianness
+provided by the compiler.
+
+Reviewed-by: Giuseppe Di Natale <dinatale2@llnl.gov>
+Signed-off-by: Brian Behlendorf <behlendorf1@llnl.gov>
+Closes #5856
+---
+ lib/libspl/include/sys/isa_defs.h | 4 ----
+ rpm/generic/zfs-kmod.spec.in      | 5 +++++
+ rpm/redhat/zfs-kmod.spec.in       | 5 +++++
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/lib/libspl/include/sys/isa_defs.h b/lib/libspl/include/sys/isa_defs.h
+index 3bca5cf..90d7a49 100644
+--- a/lib/libspl/include/sys/isa_defs.h
++++ b/lib/libspl/include/sys/isa_defs.h
+@@ -98,10 +98,6 @@ extern "C" {
+ #endif
+ #endif
+ 
+-#if !defined(_BIG_ENDIAN)
+-#define	_BIG_ENDIAN
+-#endif
+-
+ #define	_SUNOS_VTOC_16
+ 
+ /* arm arch specific defines */
+diff --git a/rpm/generic/zfs-kmod.spec.in b/rpm/generic/zfs-kmod.spec.in
+index 9d10e60..b635e6e 100644
+--- a/rpm/generic/zfs-kmod.spec.in
++++ b/rpm/generic/zfs-kmod.spec.in
+@@ -86,6 +86,11 @@ BuildRequires:             kmod-spl-devel = %{version}
+ %global KmodsMetaRequires  spl-kmod
+ %endif
+ 
++# LDFLAGS are not sanitized by arch/powerpc/Makefile (unlike other arches)
++%ifarch ppc ppc64 ppc64le
++%global __global_ldflags %{nil}
++%endif
++
+ %if 0%{?fedora} >= 17
+ %define prefix  /usr
+ %endif
+diff --git a/rpm/redhat/zfs-kmod.spec.in b/rpm/redhat/zfs-kmod.spec.in
+index fa0c110..ae7e95d 100644
+--- a/rpm/redhat/zfs-kmod.spec.in
++++ b/rpm/redhat/zfs-kmod.spec.in
+@@ -21,6 +21,11 @@ Requires:       spl-kmod\n\
+ Requires:       @PACKAGE@ = %{version}\n\
+ Conflicts:      @PACKAGE@-dkms\n\n" > %{_sourcedir}/kmod-preamble)
+ 
++# LDFLAGS are not sanitized by arch/powerpc/Makefile (unlike other arches)
++%ifarch ppc ppc64 ppc64le
++%global __global_ldflags %{nil}
++%endif
++
+ %description
+ This package contains the ZFS kernel modules.
+ 
