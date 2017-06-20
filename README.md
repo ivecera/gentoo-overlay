@@ -1,6 +1,5 @@
-gentoo-targetcli
-================
+gentoo-cera
+===========
 
-The repository contains ebuilds for the latest configshell, rtslib and targetcli
-packages. The current Gentoo portage contains only hardmasked outdated ebuilds
-that uses obsolete lio-utils to load & save target configuration.
+The repository contains ebuilds for the packages currently missing or newer
+than in the main repository.
