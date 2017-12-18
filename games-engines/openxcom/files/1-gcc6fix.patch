@@ -1,0 +1,18 @@
+diff -uNrp OpenXcom-1.0.orig/src/Geoscape/Globe.cpp OpenXcom-1.0/src/Geoscape/Globe.cpp
+--- OpenXcom-1.0.orig/src/Geoscape/Globe.cpp	2014-06-13 21:14:43.000000000 +0200
++++ OpenXcom-1.0/src/Geoscape/Globe.cpp	2017-12-18 10:03:47.621420199 +0100
+@@ -1390,12 +1390,12 @@ void Globe::drawVHLine(Surface *surface,
+ 
+ 	if (fabs(sx)<0.01)
+ 	{
+-		seg = abs( sy/(2*M_PI)*48 );
++		seg = abs( int(sy/(2*M_PI)*48) );
+ 		if (seg == 0) ++seg;
+ 	}
+ 	else
+ 	{
+-		seg = abs( sx/(2*M_PI)*96 );
++		seg = abs( int(sx/(2*M_PI)*96) );
+ 		if (seg == 0) ++seg;
+ 	}
+ 
