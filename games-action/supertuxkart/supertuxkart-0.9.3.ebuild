@@ -49,6 +49,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-0.9.3-irrlicht-bundled-libs.patch
 	"${FILESDIR}"/${PN}-0.9.3-irrlicht-system-libs.patch
 	"${FILESDIR}"/${PN}-0.9.3-fix-buildsystem.patch
+	"${FILESDIR}"/${PN}-0.9.3-gles-visual.patch
 )
 
 src_prepare() {
