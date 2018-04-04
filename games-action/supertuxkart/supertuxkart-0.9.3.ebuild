@@ -13,7 +13,7 @@ SRC_URI="mirror://sourceforge/${PN}/SuperTuxKart/${PV}/${P}-src.tar.xz
 LICENSE="GPL-2 GPL-3 CC-BY-SA-3.0 CC-BY-2.0 public-domain ZLIB"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="debug fribidi recorder wiimote"
+IUSE="debug fribidi gles2 recorder wiimote"
 
 # don't unbundle irrlicht and bullet
 # both are modified and system versions will break the game
@@ -30,10 +30,11 @@ RDEPEND="
 	virtual/glu
 	virtual/jpeg:0
 	virtual/libintl
-	virtual/opengl
 	x11-libs/libX11
 	x11-libs/libXxf86vm
 	fribidi? ( dev-libs/fribidi )
+	!gles2? ( virtual/opengl )
+	gles2? ( media-libs/mesa[gles2] )
 	recorder? ( media-libs/libopenglrecorder )
 	wiimote? ( net-wireless/bluez )"
 DEPEND="${RDEPEND}
@@ -65,6 +66,7 @@ src_configure() {
 		-DUSE_FRIBIDI=$(usex fribidi)
 		-DBUILD_RECORDER=$(usex recorder)
 		-DUSE_WIIUSE=$(usex wiimote)
+		-DUSE_GLES2=$(usex gles2)
 		-DSTK_INSTALL_BINARY_DIR=bin
 		-DSTK_INSTALL_DATA_DIR=share/${PN}
 	)
