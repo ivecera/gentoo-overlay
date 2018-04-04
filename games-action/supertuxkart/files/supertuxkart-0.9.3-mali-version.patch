@@ -1,0 +1,23 @@
+diff --git a/src/graphics/graphics_restrictions.cpp b/src/graphics/graphics_restrictions.cpp
+index 176d8b1..8ec20c9 100644
+--- a/src/graphics/graphics_restrictions.cpp
++++ b/src/graphics/graphics_restrictions.cpp
+@@ -191,6 +191,18 @@ public:
+             }
+         }
+ 
++	// Mali-T628 (ODROID XU3/XU4/XU4Q) card: driver version = "OpenGL ES 3.1 v1.r17p0-01rel0.a881d28363cdb20f0017ed13c980967e"
++	// ---------------------------------------------------------
++	if (StringUtils::startsWith(card_name, "Mali"))
++	{
++		std::vector<std::string> s = StringUtils::split(driver_version, ' ');
++		if (s.size() >= 3)
++		{
++			convertVersionString(s[2]);
++			return;
++		}
++	}
++
+         // Nvidia: driver_version = "4.3.0 NVIDIA 340.58"
+         // ----------------------------------------------
+         if (driver_version.find("NVIDIA") != std::string::npos)
