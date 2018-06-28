@@ -17,7 +17,7 @@ RDEPEND=">=virtual/opengl-7.0-r1[${MULTILIB_USEDEP}]"
 
 DEPEND="${RDEPEND}
 	x11-libs/libX11
-	x11-proto/xproto"
+	x11-base/xorg-proto"
 
 DOCS=""
 
