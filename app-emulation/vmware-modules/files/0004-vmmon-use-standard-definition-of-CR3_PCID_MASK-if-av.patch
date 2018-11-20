@@ -1,7 +1,7 @@
-From 704be6e3f2143df35e99025caa3393b9c309fbc1 Mon Sep 17 00:00:00 2001
+From af645b11548ada06acc438e745162f1d959064b1 Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Mon, 24 Jul 2017 10:08:55 +0200
-Subject: [PATCH 4/6] vmmon: use standard definition of CR3_PCID_MASK if
+Subject: [PATCH 04/16] vmmon: use standard definition of CR3_PCID_MASK if
  available
 
 The CR3_PCID_MASK is defined in mainline asm/processor-flags.h since
@@ -12,7 +12,7 @@ __read_cr3()") in v4.13-rc1.
  1 file changed, 4 insertions(+)
 
 diff --git a/vmmon-only/include/x86_basic_defs.h b/vmmon-only/include/x86_basic_defs.h
-index abfb0b8..8c7566f 100644
+index f9e6b4f..2c379a3 100644
 --- a/vmmon-only/include/x86_basic_defs.h
 +++ b/vmmon-only/include/x86_basic_defs.h
 @@ -35,6 +35,8 @@
@@ -35,5 +35,5 @@ index abfb0b8..8c7566f 100644
  
  #define CR4_VME        0x00000001
 -- 
-2.14.3
+2.21.0
 

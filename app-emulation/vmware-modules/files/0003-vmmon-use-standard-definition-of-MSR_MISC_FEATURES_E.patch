@@ -1,7 +1,7 @@
-From 53d6ccbeed4c519dc105f98552067ced2ecbd432 Mon Sep 17 00:00:00 2001
+From 7b5b2e3c4c9802d8ae4e76c2dee4a5bd4852df2b Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Fri, 23 Jun 2017 09:29:24 +0200
-Subject: [PATCH 3/6] vmmon: use standard definition of
+Subject: [PATCH 03/16] vmmon: use standard definition of
  MSR_MISC_FEATURES_ENABLES if available
 
 The MSR_MISC_FEATURES_ENABLES macro is defined in mainline since commit
@@ -16,7 +16,7 @@ v4.12-rc1.
  1 file changed, 7 insertions(+)
 
 diff --git a/vmmon-only/include/x86msr.h b/vmmon-only/include/x86msr.h
-index 3a6bfe8..904d9e9 100644
+index 92aca35..c3d7ead 100644
 --- a/vmmon-only/include/x86msr.h
 +++ b/vmmon-only/include/x86msr.h
 @@ -24,6 +24,7 @@
@@ -27,9 +27,9 @@ index 3a6bfe8..904d9e9 100644
  #define INCLUDE_ALLOW_USERLEVEL
  #define INCLUDE_ALLOW_VMX
  
-@@ -112,7 +113,9 @@ MSRQuery;
- #define MSR_TSC_AUX           0xc0000103
- #define MSR_BD_TSC_RATIO      0xc0000104
+@@ -127,7 +128,9 @@ MSRQuery;
+ 
+ #define MSR_PRED_CMD_IBPB                         (1UL << 0)
  
 +#ifndef MSR_MISC_FEATURES_ENABLES
  #define MSR_MISC_FEATURES_ENABLES            0x140
@@ -37,7 +37,7 @@ index 3a6bfe8..904d9e9 100644
  
  /* Intel Core Architecture and later: use only architected counters. */
  #define IA32_MSR_PERF_CAPABILITIES                0x345
-@@ -612,7 +615,11 @@ typedef enum {
+@@ -652,7 +655,11 @@ typedef unsigned char MTRRType;
  /*
   * MISC_FEATURES_ENABLES bits
   */
@@ -50,5 +50,5 @@ index 3a6bfe8..904d9e9 100644
  
  
 -- 
-2.14.3
+2.21.0
 

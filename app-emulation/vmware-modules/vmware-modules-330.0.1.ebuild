@@ -59,15 +59,22 @@ src_unpack() {
 
 src_prepare() {
 	# from https://github.com/mkubecek/vmware-host-modules/tree/workstation-14.1.1
-	kernel_is ge 4 9 0 && epatch "${FILESDIR}/329-4.09-00-vmnet-use-standard-definition-of-PCI_VENDOR_ID_VMWAR.patch"
-	kernel_is ge 4 10 0 && epatch "${FILESDIR}/329-4.10-00-vmnet-use-standard-definition-of-PCI_VENDOR_ID_VMWAR.patch"
-	kernel_is ge 4 12 0 && epatch "${FILESDIR}/329-4.12-00-vmmon-use-standard-definition-of-MSR_MISC_FEATURES_E.patch"
-	kernel_is ge 4 13 0 && epatch "${FILESDIR}/329-4.13-00-vmmon-use-standard-definition-of-CR3_PCID_MASK-if-av.patch"
-	epatch "${FILESDIR}/329-00-vmmon-quick-workaround-for-objtool-warnings.patch"
-	kernel_is ge 4 16 0 && epatch "${FILESDIR}/329-4.16-00-vmmon-use-standard-definition-of-MSR_K7_HWCR_SMMLOCK.patch"
-	epatch "${FILESDIR}/329-01-vmmon-fix-always_inline-attribute-usage.patch"
-	epatch "${FILESDIR}/329-02-vmmon-fix-indirect-call-with-retpoline-build.patch"
-	epatch "${FILESDIR}/329-03-vmmon-check-presence-of-file_operations-poll.patch"
+	epatch ${FILESDIR}/0001-vmnet-use-standard-definition-of-PCI_VENDOR_ID_VMWAR.patch
+	epatch ${FILESDIR}/0002-vmnet-use-standard-definition-of-PCI_VENDOR_ID_VMWAR.patch
+	epatch ${FILESDIR}/0003-vmmon-use-standard-definition-of-MSR_MISC_FEATURES_E.patch
+	epatch ${FILESDIR}/0004-vmmon-use-standard-definition-of-CR3_PCID_MASK-if-av.patch
+	epatch ${FILESDIR}/0005-vmmon-quick-workaround-for-objtool-warnings.patch
+	epatch ${FILESDIR}/0006-modules-remove-.cache.mk-on-make-clean.patch
+	epatch ${FILESDIR}/0007-vmmon-use-standard-definition-of-MSR_K7_HWCR_SMMLOCK.patch
+	epatch ${FILESDIR}/0008-vmmon-fix-always_inline-attribute-usage.patch
+	epatch ${FILESDIR}/0009-vmmon-fix-indirect-call-with-retpoline-build.patch
+	epatch ${FILESDIR}/0010-vmmon-check-presence-of-file_operations-poll.patch
+	epatch ${FILESDIR}/0011-modules-replace-SUBDIRS-with-M.patch
+	epatch ${FILESDIR}/0012-vmmon-totalram_pages-is-a-function-since-5.0.patch
+	epatch ${FILESDIR}/0013-vmmon-bring-back-the-do_gettimeofday-helper.patch
+	epatch ${FILESDIR}/0014-modules-handle-access_ok-with-two-arguments.patch
+	epatch ${FILESDIR}/0015-vmmon-use-KERNEL_DS-rather-than-get_ds.patch
+	epatch ${FILESDIR}/0016-vmmon-fix-return-type-of-vm_operations_struct-fault-.patch
 
 	# decouple the kernel include dir from the running kernel version: https://github.com/stefantalpalaru/gentoo-overlay/issues/17
 	sed -i -e "s%HEADER_DIR = /lib/modules/\$(VM_UNAME)/build/include%HEADER_DIR = ${KERNEL_DIR}/include%" */Makefile || die "sed failed"

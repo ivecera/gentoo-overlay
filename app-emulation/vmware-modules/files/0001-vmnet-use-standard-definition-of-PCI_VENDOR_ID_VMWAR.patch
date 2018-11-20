@@ -1,8 +1,8 @@
-From 4d80590924550d0ee3fe470e027deea0ee43e6b6 Mon Sep 17 00:00:00 2001
+From c4a0d574ffb2617ac020a581811cc4b9e244828a Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Tue, 18 Apr 2017 12:52:08 +0200
-Subject: [PATCH 1/6] vmnet: use standard definition of PCI_VENDOR_ID_VMWARE if
- available
+Subject: [PATCH 01/16] vmnet: use standard definition of PCI_VENDOR_ID_VMWARE
+ if available
 
 The PCI_VENDOR_ID_VMWARE macro is defined in mainline pci_ids.h since
 commit 94e57fea6202 ("PCI: Move PCI_VENDOR_ID_VMWARE to pci_ids.h")
@@ -12,7 +12,7 @@ in v3.18-rc1.
  1 file changed, 5 insertions(+)
 
 diff --git a/vmnet-only/vm_device_version.h b/vmnet-only/vm_device_version.h
-index ab396bc..cafddd0 100644
+index 39371ad..2e72401 100644
 --- a/vmnet-only/vm_device_version.h
 +++ b/vmnet-only/vm_device_version.h
 @@ -35,6 +35,8 @@
@@ -36,5 +36,5 @@ index ab396bc..cafddd0 100644
  #define PCI_DEVICE_ID_VMWARE_SVGA               0x0710
  #define PCI_DEVICE_ID_VMWARE_VGA                0x0711
 -- 
-2.14.3
+2.21.0
 

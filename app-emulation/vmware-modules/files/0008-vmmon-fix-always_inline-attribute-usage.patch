@@ -1,7 +1,7 @@
-From c46d05eb1e2d32d82ec377a4c9b0dd0164eee68e Mon Sep 17 00:00:00 2001
+From 6e4753597a8460bfe8f69118a635d34aaeefad27 Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Thu, 22 Mar 2018 13:45:34 +0100
-Subject: [PATCH 08/10] vmmon: fix always_inline attribute usage
+Subject: [PATCH 08/16] vmmon: fix always_inline attribute usage
 
 Function declared with __attribute__((always_inline)) should also be
 declared as inline, otherwise gcc issues a warning "always_inline function
@@ -14,10 +14,10 @@ inline functions should be declared in kernel code.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/vmmon-only/linux/driver.c b/vmmon-only/linux/driver.c
-index 1905aa4..b37454c 100644
+index 3dc5dd3..92a3529 100644
 --- a/vmmon-only/linux/driver.c
 +++ b/vmmon-only/linux/driver.c
-@@ -981,7 +981,7 @@ LinuxDriverReadTSC(void *data,   // OUT: TSC values
+@@ -982,7 +982,7 @@ LinuxDriverReadTSC(void *data,   // OUT: TSC values
   *-----------------------------------------------------------------------------
   */
  
@@ -27,5 +27,5 @@ index 1905aa4..b37454c 100644
  {
     TSCDelta tscDelta;
 -- 
-2.17.0
+2.21.0
 
