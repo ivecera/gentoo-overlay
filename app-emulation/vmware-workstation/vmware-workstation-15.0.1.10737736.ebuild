@@ -143,7 +143,7 @@ BUNDLED_LIB_DEPENDS="
 	sys-apps/pcsc-lite
 	sys-fs/fuse
 	sys-libs/zlib
-	virtual/jpeg:62
+	virtual/jpeg-compat
 	x11-libs/cairo[glib]
 	x11-libs/gdk-pixbuf:2
 	x11-libs/gtk+:3
