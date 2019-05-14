@@ -1,7 +1,7 @@
-From 6392262b68387299ee81d5d659cb5423a2ae1c9c Mon Sep 17 00:00:00 2001
+From 40b24c56c449532608c9998da40a8f34a70442f6 Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Mon, 26 Mar 2018 13:33:32 +0200
-Subject: [PATCH 09/10] vmmon: fix indirect call with retpoline build
+Subject: [PATCH 09/16] vmmon: fix indirect call with retpoline build
 
 Build against kernel with retpoline support issues warning
 
@@ -17,10 +17,10 @@ macro if available and fallback to the original code if not.
  1 file changed, 11 insertions(+)
 
 diff --git a/vmmon-only/common/task.c b/vmmon-only/common/task.c
-index 98cc74a..400ebfe 100644
+index 54f2ddf..679cdf5 100644
 --- a/vmmon-only/common/task.c
 +++ b/vmmon-only/common/task.c
-@@ -2203,12 +2203,23 @@ TaskSwitchToMonitor(VMCrossPage *crosspage)
+@@ -2322,12 +2322,23 @@ TaskSwitchToMonitor(VMCrossPage *crosspage)
     {
        uint64 raxGetsWiped, rcxGetsWiped;
  
@@ -45,5 +45,5 @@ index 98cc74a..400ebfe 100644
  #elif defined(_MSC_VER)
     /*
 -- 
-2.17.0
+2.21.0
 

@@ -1,7 +1,7 @@
-From 70ed9dd2ec64c09fbd0de27dcb10f9948a2b212a Mon Sep 17 00:00:00 2001
+From a563b67538fe63ca2a4559c0d3f8d32c3b60b2c3 Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Mon, 20 Aug 2018 07:46:13 +0200
-Subject: [PATCH] vmmon: check presence of file_operations::poll()
+Subject: [PATCH 10/16] vmmon: check presence of file_operations::poll()
 
 Commit 11c5ad0ec441 ("eventpoll: switch to ->poll_mask") in v4.18-rc1, made
 eventpoll switch from ->poll() to ->poll_mask(), resulting in a null
@@ -81,5 +81,5 @@ index 21758c2..af4b1d9 100644
           vm->vmhost->vcpuSemaTask[vcpuid] = current;
           schedule_timeout(timeoutms * HZ / 1000);  // convert to Hz
 -- 
-2.19.0
+2.21.0
 

@@ -1,7 +1,7 @@
-From 7cb0c3beb4abde406d5334376106d68997f6fb51 Mon Sep 17 00:00:00 2001
+From 014c59260c17c805194c8d47b0531efdfae54cd3 Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Tue, 18 Apr 2017 13:01:56 +0200
-Subject: [PATCH 2/6] vmnet: use standard definition of
+Subject: [PATCH 02/16] vmnet: use standard definition of
  PCI_VENDOR_ID_VMWARE_VMXNET3 if available
 
 The PCI_DEVICE_ID_VMWARE_VMXNET3 macro is defined in mainline pci_ids.h
@@ -12,7 +12,7 @@ v4.10-rc1.
  1 file changed, 4 insertions(+)
 
 diff --git a/vmnet-only/vm_device_version.h b/vmnet-only/vm_device_version.h
-index cafddd0..9305ddb 100644
+index 2e72401..8c6ed6f 100644
 --- a/vmnet-only/vm_device_version.h
 +++ b/vmnet-only/vm_device_version.h
 @@ -75,7 +75,11 @@
@@ -28,5 +28,5 @@ index cafddd0..9305ddb 100644
  #define PCI_DEVICE_ID_VMWARE_82574              0x07D0
  #define PCI_DEVICE_ID_VMWARE_AHCI               0x07E0
 -- 
-2.14.3
+2.21.0
 

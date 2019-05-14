@@ -1,7 +1,7 @@
-From 182ac915372c798e400c9718499cae2cb1822ef1 Mon Sep 17 00:00:00 2001
+From d15e5dded5d23b14cfc4cd3c01fe44ed5393b74e Mon Sep 17 00:00:00 2001
 From: Michal Kubecek <mkubecek@suse.cz>
 Date: Sat, 30 Sep 2017 21:41:51 +0200
-Subject: [PATCH 6/6] vmmon: quick workaround for objtool warnings
+Subject: [PATCH 05/16] vmmon: quick workaround for objtool warnings
 
 As discussed in
 
@@ -41,5 +41,5 @@ index 8cdbc93..b869def 100644
  
  void LogThrottled(uint32 *count, const char *fmt, ...) PRINTF_DECL(2, 3);
 -- 
-2.14.3
+2.21.0
 

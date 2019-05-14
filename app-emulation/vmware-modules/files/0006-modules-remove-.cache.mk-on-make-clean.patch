@@ -1,0 +1,46 @@
+From 26804d4dc9b6bed2a8894b2ba8be136d150597a4 Mon Sep 17 00:00:00 2001
+From: Theo Bertacchini <theo.bertacchini@epitech.eu>
+Date: Sun, 27 May 2018 17:14:52 +0900
+Subject: [PATCH 06/16] modules: remove .cache.mk on make clean
+
+Remove .cache.mk inside vmmon-only and vmnet-only when executing
+"make clean". This file can cause issues when upgrading gcc as make will
+still look for includes inside older gcc includes directory.
+
+File .cache.mk with cache of generated variables was created by build since
+kernel v4.15-rc1, commit 3298b690b21c ("kbuild: Add a cache for generated
+variables") until the feature was removed in v4.18-rc1, commit e08d6de4e532
+("kbuild: remove kbuild cache").
+---
+ vmmon-only/Makefile.kernel | 2 +-
+ vmnet-only/Makefile.kernel | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/vmmon-only/Makefile.kernel b/vmmon-only/Makefile.kernel
+index 385068d..a2e5911 100644
+--- a/vmmon-only/Makefile.kernel
++++ b/vmmon-only/Makefile.kernel
+@@ -31,7 +31,7 @@ $(DRIVER)-y := $(subst $(SRCROOT)/, , $(patsubst %.c, %.o, \
+ 		$(SRCROOT)/bootstrap/*.c)))
+ 
+ clean:
+-	rm -rf $(wildcard $(DRIVER).mod.c $(DRIVER).ko .tmp_versions \
++	rm -rf $(wildcard $(DRIVER).mod.c $(DRIVER).ko .tmp_versions .cache.mk \
+ 		Module.symvers Modules.symvers Module.markers modules.order \
+ 		$(foreach dir,linux/ common/ vmcore/ bootstrap/ \
+ 		./,$(addprefix $(dir),.*.cmd .*.o.flags *.o)))
+diff --git a/vmnet-only/Makefile.kernel b/vmnet-only/Makefile.kernel
+index 44a8a95..de04abe 100644
+--- a/vmnet-only/Makefile.kernel
++++ b/vmnet-only/Makefile.kernel
+@@ -32,6 +32,6 @@ $(DRIVER)-y := driver.o hub.o userif.o netif.o bridge.o procfs.o smac_compat.o \
+ ####
+ 
+ clean:
+-	rm -rf $(DRIVER).o $(DRIVER).mod.o $(DRIVER).mod.c $(DRIVER).ko \
++	rm -rf $(DRIVER).o $(DRIVER).mod.o $(DRIVER).mod.c $(DRIVER).ko .cache.mk \
+ 	       .tmp_versions Module.symvers Modules.symvers Module.markers \
+ 	       modules.order $($(DRIVER)-y) .*.cmd .*.o.flags
+-- 
+2.21.0
+
