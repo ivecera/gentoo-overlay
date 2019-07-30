@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -7,10 +7,15 @@ inherit eapi7-ver eutils readme.gentoo-r1 gnome2-utils pam systemd xdg-utils
 
 MY_PN="VMware-Workstation-Full"
 MY_PV=$(ver_cut 1-3)
-PV_MODULES="330.$(ver_cut 2-3)"
+# Getting the major version number for kernel modules:
+## cd vmware-vmx/lib/modules/source
+## tar xf vmmon.tar
+## cd vmmon-only/include
+## grep VMMON_VERSION iocontrols.h
+PV_MODULES="361.$(ver_cut 2-3)"
 PV_BUILD=$(ver_cut 4)
 MY_P="${MY_PN}-${MY_PV}-${PV_BUILD}"
-VMWARE_FUSION_VER="11.0.1/10738065" # https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/
+VMWARE_FUSION_VER="11.1.0/13668589" # https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/
 SYSTEMD_UNITS_TAG="gentoo-02"
 
 DESCRIPTION="Emulate a complete PC without the performance overhead of most emulators"
@@ -28,7 +33,7 @@ SRC_URI="
 LICENSE="GPL-2 GPL-3 MIT-with-advertising vmware"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="bundled-libs cups doc macos-guests +modules ovftool server systemd vix"
+IUSE="+bundled-libs cups doc macos-guests +modules ovftool server systemd vix"
 DARWIN_GUESTS="darwin darwinPre15"
 IUSE_VMWARE_GUESTS="${DARWIN_GUESTS} linux linuxPreGlibc25 netware solaris windows winPre2k winPreVista"
 for guest in ${IUSE_VMWARE_GUESTS}; do
@@ -39,7 +44,7 @@ REQUIRED_USE="
 	vmware-tools-darwin? ( macos-guests )
 	vmware-tools-darwinPre15? ( macos-guests )
 "
-RESTRICT="mirror strip"
+RESTRICT="mirror preserve-libs strip"
 
 BUNDLED_LIBS_DIR=/opt/vmware/lib/vmware/lib
 
@@ -141,7 +146,7 @@ BUNDLED_LIB_DEPENDS="
 	net-misc/curl
 	sys-apps/dbus
 	sys-apps/pcsc-lite
-	sys-fs/fuse
+	sys-fs/fuse:0
 	sys-libs/zlib
 	virtual/jpeg-compat
 	x11-libs/cairo[glib]
@@ -180,6 +185,7 @@ RDEPEND="
 	dev-libs/icu
 	dev-libs/json-c
 	dev-libs/nettle:0/6.2
+	<gnome-base/dconf-0.30.1
 	gnome-base/gconf
 	gnome-base/libgnome-keyring
 	media-gfx/graphite2
@@ -199,7 +205,6 @@ RDEPEND="
 	x11-libs/startup-notification
 	x11-libs/xcb-util
 	x11-themes/hicolor-icon-theme
-	bundled-libs? ( media-libs/tiff:3 )
 	!bundled-libs? ( ${BUNDLED_LIB_DEPENDS} )
 	!app-emulation/vmware-player
 	!app-emulation/vmware-tools
@@ -465,6 +470,8 @@ src_install() {
 	done
 	dosym "${VM_INSTALL_DIR}"/lib/vmware/bin/vmplayer "${VM_INSTALL_DIR}"/bin/vmplayer
 	dosym "${VM_INSTALL_DIR}"/lib/vmware/bin/vmware "${VM_INSTALL_DIR}"/bin/vmware
+	dosym "${VM_INSTALL_DIR}"/lib/vmware/bin/vmware-fuseUI "${VM_INSTALL_DIR}"/bin/vmware-fuseUI
+	dosym "${VM_INSTALL_DIR}"/lib/vmware/bin/vmware-netcfg "${VM_INSTALL_DIR}"/bin/vmware-netcfg
 	dosym "${VM_INSTALL_DIR}"/lib/vmware/icu /etc/vmware/icu
 
 	# fix permissions
