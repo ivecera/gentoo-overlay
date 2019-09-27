@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -6,9 +6,10 @@ EAPI=6
 inherit eapi7-ver eutils flag-o-matic linux-info linux-mod user udev
 
 DESCRIPTION="VMware kernel modules"
-HOMEPAGE="http://www.vmware.com/"
+HOMEPAGE="https://github.com/mkubecek/vmware-host-modules"
 
-SRC_URI=""
+MY_KERNEL_VERSION="5.3"
+SRC_URI="https://github.com/mkubecek/vmware-host-modules/archive/w${PV}-k${MY_KERNEL_VERSION}.zip -> ${P}.zip"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -16,11 +17,9 @@ KEYWORDS="~amd64"
 IUSE=""
 
 RDEPEND=""
-DEPEND="
-	=app-emulation/vmware-workstation-15.$(ver_cut 2-3)*
-"
+DEPEND=""
 
-S=${WORKDIR}
+S="${WORKDIR}/vmware-host-modules-w${PV}-k${MY_KERNEL_VERSION}"
 
 pkg_setup() {
 	CONFIG_CHECK="~HIGH_RES_TIMERS"
@@ -50,32 +49,7 @@ pkg_setup() {
 	done
 }
 
-src_unpack() {
-	cd "${S}"
-	for mod in ${VMWARE_MODULE_LIST}; do
-		tar -xf /opt/vmware/lib/vmware/modules/source/${mod}.tar
-	done
-}
-
 src_prepare() {
-	# from https://github.com/mkubecek/vmware-host-modules/tree/workstation-14.1.1
-	epatch ${FILESDIR}/0001-vmnet-use-standard-definition-of-PCI_VENDOR_ID_VMWAR.patch
-	epatch ${FILESDIR}/0002-vmnet-use-standard-definition-of-PCI_VENDOR_ID_VMWAR.patch
-	epatch ${FILESDIR}/0003-vmmon-use-standard-definition-of-MSR_MISC_FEATURES_E.patch
-	epatch ${FILESDIR}/0004-vmmon-use-standard-definition-of-CR3_PCID_MASK-if-av.patch
-	epatch ${FILESDIR}/0005-vmmon-quick-workaround-for-objtool-warnings.patch
-	epatch ${FILESDIR}/0006-modules-remove-.cache.mk-on-make-clean.patch
-	epatch ${FILESDIR}/0007-vmmon-use-standard-definition-of-MSR_K7_HWCR_SMMLOCK.patch
-	epatch ${FILESDIR}/0008-vmmon-fix-always_inline-attribute-usage.patch
-	epatch ${FILESDIR}/0009-vmmon-fix-indirect-call-with-retpoline-build.patch
-	epatch ${FILESDIR}/0010-vmmon-check-presence-of-file_operations-poll.patch
-	epatch ${FILESDIR}/0011-modules-replace-SUBDIRS-with-M.patch
-	epatch ${FILESDIR}/0012-vmmon-totalram_pages-is-a-function-since-5.0.patch
-	epatch ${FILESDIR}/0013-vmmon-bring-back-the-do_gettimeofday-helper.patch
-	epatch ${FILESDIR}/0014-modules-handle-access_ok-with-two-arguments.patch
-	epatch ${FILESDIR}/0015-vmmon-use-KERNEL_DS-rather-than-get_ds.patch
-	epatch ${FILESDIR}/0016-vmmon-fix-return-type-of-vm_operations_struct-fault-.patch
-
 	# decouple the kernel include dir from the running kernel version: https://github.com/stefantalpalaru/gentoo-overlay/issues/17
 	sed -i -e "s%HEADER_DIR = /lib/modules/\$(VM_UNAME)/build/include%HEADER_DIR = ${KERNEL_DIR}/include%" */Makefile || die "sed failed"
 
@@ -113,4 +87,5 @@ src_install() {
 
 pkg_postinst() {
 	linux-mod_pkg_postinst
+	ewarn "Don't forget to run '/etc/init.d/vmware restart' to use the new kernel modules."
 }
