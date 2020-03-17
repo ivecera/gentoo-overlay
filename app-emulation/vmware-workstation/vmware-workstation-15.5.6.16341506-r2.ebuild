@@ -1,26 +1,28 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit eapi7-ver eutils readme.gentoo-r1 gnome2-utils pam systemd xdg-utils
+PYTHON_COMPAT=( python3_{6,7,8,9} )
+inherit eutils readme.gentoo-r1 gnome2-utils pam python-any-r1 systemd xdg-utils
 
 MY_PN="VMware-Workstation-Full"
 MY_PV=$(ver_cut 1-3)
 PV_MODULES="${MY_PV}"
 PV_BUILD=$(ver_cut 4)
 MY_P="${MY_PN}-${MY_PV}-${PV_BUILD}"
-VMWARE_FUSION_VER="11.1.0/13668589" # https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/
+VMWARE_FUSION_VER="11.5.5/16269456" # https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/
 SYSTEMD_UNITS_TAG="gentoo-02"
+UNLOCKER_VERSION="3.0.3"
 
 DESCRIPTION="Emulate a complete PC without the performance overhead of most emulators"
 HOMEPAGE="http://www.vmware.com/products/workstation/"
 SRC_URI="
 	https://download3.vmware.com/software/wkst/file/${MY_P}.x86_64.bundle
 	macos-guests? (
-		https://github.com/DrDonk/unlocker/archive/3.0.2.tar.gz -> unlocker-3.0.2.tar.gz
-		vmware-tools-darwinPre15? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/packages/com.vmware.fusion.tools.darwinPre15.zip.tar -> com.vmware.fusion.tools.darwinPre15-${PV}.zip.tar )
-		vmware-tools-darwin? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/packages/com.vmware.fusion.tools.darwin.zip.tar -> com.vmware.fusion.tools.darwin-${PV}.zip.tar )
+		https://github.com/paolo-projects/unlocker/archive/${UNLOCKER_VERSION}.tar.gz -> unlocker-${UNLOCKER_VERSION}.tar.gz
+		vmware-tools-darwinPre15? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/core/com.vmware.fusion.zip.tar -> com.vmware.fusion-${PV}.zip.tar )
+		vmware-tools-darwin? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/core/com.vmware.fusion.zip.tar -> com.vmware.fusion-${PV}.zip.tar )
 	)
 	systemd? ( https://github.com/akhuettel/systemd-vmware/archive/${SYSTEMD_UNITS_TAG}.tar.gz -> vmware-systemd-${SYSTEMD_UNITS_TAG}.tgz )
 	"
@@ -53,10 +55,9 @@ RDEPEND="
 	dev-libs/gmp:0
 	dev-libs/icu
 	dev-libs/json-c
-	dev-libs/nettle:0/6.2
+	dev-libs/nettle:0
 	gnome-base/dconf
 	gnome-base/gconf
-	gnome-base/libgnome-keyring
 	media-gfx/graphite2
 	media-libs/alsa-lib
 	media-libs/libart_lgpl
@@ -78,12 +79,10 @@ RDEPEND="
 	!app-emulation/vmware-tools
 "
 DEPEND="
-	dev-lang/python:2.7
+	${PYTHON_DEPS}
 	>=dev-util/patchelf-0.9
 	modules? ( ~app-emulation/vmware-modules-${PV_MODULES} )
 	ovftool? ( app-admin/chrpath )
-	sys-libs/ncurses-compat
-	sys-libs/readline:0
 "
 
 S=${WORKDIR}/extracted
@@ -120,14 +119,16 @@ src_unpack() {
 		rm -r extracted/vmware-vix-core extracted/vmware-vix-lib-Workstation* || die "unable to remove dir"
 	fi
 
-	for guest in ${DARWIN_GUESTS}; do
-		if use vmware-tools-${guest}; then
-			mkdir extracted/vmware-tools-${guest}
-			unzip -q com.vmware.fusion.tools.${guest}.zip payload/\*
-			mv payload/* extracted/vmware-tools-${guest}/
-			rm -r payload com.vmware.fusion.tools.${guest}.zip
-		fi
-	done
+	if use vmware-tools-darwinPre15 || use vmware-tools-darwin; then
+		unzip -q com.vmware.fusion.zip || die
+		for guest in ${DARWIN_GUESTS}; do
+			if use vmware-tools-${guest}; then
+				mkdir extracted/vmware-tools-${guest}
+				mv "payload/VMware Fusion.app/Contents/Library/isoimages/${guest}.iso" extracted/vmware-tools-${guest}/ || die
+			fi
+		done
+		rm -rf __MACOSX payload manifest.plist preflight postflight com.vmware.fusion.zip
+	fi
 }
 
 src_prepare() {
@@ -295,7 +296,7 @@ src_install() {
 		doins -r *
 
 		chmod 0755 "${ED}${VM_INSTALL_DIR}"/lib/vmware-ovftool/{ovftool,ovftool.bin}
-		dosym "${ED}${VM_INSTALL_DIR}"/lib/vmware-ovftool/ovftool "${VM_INSTALL_DIR}"/bin/ovftool
+		dosym ../../lib/vmware-ovftool/ovftool "${VM_INSTALL_DIR}"/bin/ovftool
 
 		cd - >/dev/null
 	fi
@@ -403,13 +404,13 @@ src_install() {
 	# fill in variable placeholders
 	sed -e "s:@@LIBCONF_DIR@@:${VM_INSTALL_DIR}/lib/vmware/libconf:g" \
 		-i "${ED}${VM_INSTALL_DIR}"/lib/vmware/libconf/etc/gtk-3.0/gdk-pixbuf.loaders || die
-	sed -e "s:@@BINARY@@:${EPREFIX}/usr/bin/vmplayer:g" \
+	sed -e "s:@@BINARY@@:${EPREFIX}${VM_INSTALL_DIR}/bin/vmplayer:g" \
 		-e "/^Encoding/d" \
 		-i "${ED}/usr/share/applications/vmware-player.desktop" || die
-	sed -e "s:@@BINARY@@:${EPREFIX}/usr/bin/vmware:g" \
+	sed -e "s:@@BINARY@@:${EPREFIX}${VM_INSTALL_DIR}/bin/vmware:g" \
 		-e "/^Encoding/d" \
 		-i "${ED}/usr/share/applications/vmware-workstation.desktop" || die
-	sed -e "s:@@BINARY@@:${EPREFIX}/usr/bin/vmware-netcfg:g" \
+	sed -e "s:@@BINARY@@:${EPREFIX}${VM_INSTALL_DIR}/bin/vmware-netcfg:g" \
 		-e "/^Encoding/d" \
 		-i "${ED}/usr/share/applications/vmware-netcfg.desktop" || die
 
@@ -495,7 +496,7 @@ src_install() {
 
 	# enable macOS guests support
 	if use macos-guests; then
-		python2 "${WORKDIR}"/unlocker-*/unlocker.py >/dev/null || die "unlocker.py failed"
+		python3 "${WORKDIR}"/unlocker-*/unlocker.py >/dev/null || die "unlocker.py failed"
 	fi
 
 	# VMware tools
