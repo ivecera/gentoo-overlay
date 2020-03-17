@@ -82,7 +82,7 @@ DEPEND="
 	>=dev-util/patchelf-0.9
 	modules? ( ~app-emulation/vmware-modules-${PV_MODULES} )
 	ovftool? ( app-admin/chrpath )
-	sys-libs/ncurses:5
+	sys-libs/ncurses-compat
 	sys-libs/readline:0
 "
 
