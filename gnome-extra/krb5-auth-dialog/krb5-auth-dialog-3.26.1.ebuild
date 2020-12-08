@@ -1,9 +1,9 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=4
+EAPI=6
 
-inherit eutils gnome2
+inherit gnome2
 
 DESCRIPTION="Kerberos 5 authentication dialog"
 HOMEPAGE="https://honk.sigxcpu.org/piki/projects/krb5-auth-dialog/"
@@ -25,9 +25,11 @@ RDEPEND="virtual/krb5
 		pam? ( sys-libs/pam )"
 DEPEND="${RDEPEND}"
 
-pkg_setup() {
-	G2CONF="${G2CONF}
-			$(use_with caps libcap)
-			$(use_enable networkmanager network-manager)
-			$(use_with pam)"
+src_configure() {
+	local myconf
+
+	gnome2_src_configure								\
+		$(use_with caps libcap)							\
+		$(use_enable networkmanager network-manager)	\
+		$(use_with pam)
 }
