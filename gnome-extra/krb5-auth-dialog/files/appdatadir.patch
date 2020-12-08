@@ -1,0 +1,13 @@
+diff --git a/src/Makefile.am b/src/Makefile.am
+index f72ff2d..0487fe8 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -26,7 +26,7 @@ $(service_DATA): $(service_in_files) Makefile
+ 	sed -e "s|\@BINDIR\@|$(bindir)|" $< > $@
+ 
+ @INTLTOOL_XML_RULE@
+-appdatadir       = $(datadir)/appdata
++appdatadir       = $(datadir)/metainfo
+ appdata_in_files = krb5-auth-dialog.appdata.xml.in
+ appdata_DATA     = $(appdata_in_files:.xml.in=.xml)
+ 

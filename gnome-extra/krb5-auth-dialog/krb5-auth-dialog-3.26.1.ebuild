@@ -3,7 +3,7 @@
 
 EAPI=6
 
-inherit gnome2
+inherit autotools gnome2
 
 DESCRIPTION="Kerberos 5 authentication dialog"
 HOMEPAGE="https://honk.sigxcpu.org/piki/projects/krb5-auth-dialog/"
@@ -24,6 +24,14 @@ RDEPEND="virtual/krb5
 		networkmanager? ( net-misc/networkmanager )
 		pam? ( sys-libs/pam )"
 DEPEND="${RDEPEND}"
+
+GNOME2_EAUTORECONF="yes"
+
+src_prepare() {
+	epatch "${FILESDIR}/appdatadir.patch"
+
+	gnome2_src_prepare
+}
 
 src_configure() {
 	local myconf
