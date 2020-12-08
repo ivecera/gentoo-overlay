@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( python2_7 python3_4 pypy pypy3 )
+PYTHON_COMPAT=( python3_{6..9} )
 inherit distutils-r1
 
 DESCRIPTION="Tools for interacting with Intel's AMT"
