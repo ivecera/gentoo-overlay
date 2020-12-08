@@ -4,16 +4,14 @@
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_7 python3_6 python3_7 )
+PYTHON_COMPAT=( python2_7 python3_7 python3_8 )
 PYTHON_REQ_USE='threads(+)'
 
-inherit python-single-r1 waf-utils git-r3
+inherit python-single-r1 waf-utils
 
 DESCRIPTION="Opengl test suite"
 HOMEPAGE="https://github.com/glmark2/glmark2"
-SRC_URI=""
-EGIT_REPO_URI="https://github.com/glmark2/glmark2"
-EGIT_COMMIT="c17fd14505f30d9e4dbad276f7aa956fd21a637b"
+SRC_URI="https://github.com/glmark2/glmark2/archive/2020.04.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -34,8 +32,10 @@ REQUIRED_USE="
 	|| ( drm wayland X )"
 
 src_prepare() {
+	epatch "${FILESDIR}/01-Build-Fix-Python-3-incompatibility.patch"
 	rm -rf "${S}/src/libjpeg-turbo"
 	rm -rf "${S}/src/libpng"
+	rm -rf "${S}/src/zlib"
 }
 
 src_configure() {
